@@ -1,0 +1,121 @@
+<style>
+	/* Global */
+	html, body {
+		scroll-behavior: smooth;
+		-webkit-overflow-scrolling: touch;
+		scrollbar-gutter: stable;
+	}
+
+	/* Modal Overlay */
+	.modal-overlay {
+		backdrop-filter: blur(6px);
+		background: rgba(0, 0, 0, 0.45);
+		transition: opacity .22s ease, visibility .22s ease;
+		opacity: 1;
+		visibility: visible;
+		pointer-events: auto;
+	}
+
+	.modal-overlay.hidden {
+		opacity: 0;
+		visibility: hidden;
+		pointer-events: none;
+	}
+
+	/* Topbar Buttons */
+	.topbar .auth .btn.ghost {
+		background: rgba(255, 255, 255, 0.06);
+		color: #e6eef8;
+		border: 1px solid rgba(255, 255, 255, 0.08);
+		box-shadow: none;
+	}
+
+	/* Modal */
+	.modal {
+		background: rgba(6, 10, 18, 0.76);
+		color: #e6eef8;
+		backdrop-filter: blur(10px) saturate(1.05);
+		border: 1px solid rgba(255, 255, 255, 0.04);
+		box-shadow: 0 28px 80px rgba(2, 6, 23, 0.75);
+		transform: translateY(8px) scale(.996);
+		transition: transform .22s cubic-bezier(.2, .9, .2, 1),
+					opacity .18s ease;
+		opacity: 0;
+	}
+
+	.modal-overlay:not(.hidden) .modal {
+		transform: translateY(0) scale(1);
+		opacity: 1;
+	}
+
+	/* Form Inputs */
+	.auth-form input {
+		background: rgba(255, 255, 255, 0.03);
+		color: #e6eef8;
+		border-radius: 8px;
+		padding: .6rem;
+		border: 1px solid rgba(255, 255, 255, 0.04);
+	}
+
+	.auth-form input::placeholder {
+		color: rgba(230, 238, 248, 0.55);
+	}
+
+	.auth-form label {
+		color: rgba(230, 238, 248, 0.9);
+		font-weight: 600;
+	}
+
+	/* Close Button */
+	.modal-close {
+		font-weight: 700;
+		color: #e6eef8;
+	}
+
+	/* Primary Modal Button */
+	.modal .btn.primary {
+		background: linear-gradient(90deg, #5ef0c6 0%, #60a5fa 100%);
+		color: #03121a;
+		font-weight: 700;
+		box-shadow: 0 10px 30px rgba(96, 165, 250, 0.12);
+	}
+
+	/* Reveal Animation */
+	.reveal {
+		opacity: 0;
+		transform: translateX(var(--reveal-x, 0));
+		transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+	}
+
+	.reveal.in-view {
+		opacity: 1;
+		transform: translateX(0);
+	}
+
+	.reveal[data-direction="left"] {
+		--reveal-x: -30px;
+	}
+
+	.reveal[data-direction="right"] {
+		--reveal-x: 30px;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.reveal {
+			transition: none;
+		}
+	}
+
+	/* Sections */
+	.pro-section {
+		padding: 4rem 0;
+		text-align: center;
+	}
+
+	/* Layout */
+	.container {
+		max-width: 1100px;
+		margin: 0 auto;
+		padding: 1rem;
+	}
+</style>

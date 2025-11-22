@@ -1,73 +1,108 @@
+{% load static %}
 <!doctype html>
 <html lang="en">
 <head>
-	<meta charset="utf-8" />
-	<meta name="viewport" content="width=device-width,initial-scale=1" />
-	<title>Car Details — AutoWave</title>
-	<link rel="stylesheet" href="style.css">
+    <meta charset="utf-8">
+    <title>{{ car.model }} — AutoWave</title>
+    <link rel="stylesheet" href="{% static 'css/car_details.css' %}">
 </head>
 <body>
-	<header class="topbar">
-		<div class="container topbar-inner">
-			<div class="logo">AutoWave</div>
-			<nav class="main-nav">
-				<a href="index.html#home">Home</a>
-				<a href="index.html#about">About Us</a>
-				<a href="index.html#contact">Contact Us</a>
-				<a href="index.html#location">Location</a>
-			</nav>
-			<div class="auth">
-				<button id="loginBtn2" class="btn ghost">Login</button>
-				<button id="signupBtn2" class="btn primary">Sign Up</button>
-			</div>
-		</div>
-	</header>
+    <!-- Topbar -->
+    <header class="topbar">
+        <div class="container topbar-inner">
+            <div class="logo">AutoWave</div>
+            <nav class="main-nav">
+                <a href="{% url 'home' %}#home">Home</a>
+                <a href="{% url 'home' %}#about">About</a>
+            </nav>
+            <div class="auth">
+                <button id="loginBtn" class="btn ghost">Login</button>
+                <button id="signupBtn" class="btn primary">Sign Up</button>
+            </div>
+        </div>
+    </header>
 
-	<main class="details container">
-		<div class="details-grid glass">
-			<div class="image-col">
-				<img id="detailImage" src="https://picsum.photos/seed/placeholder/900/560" alt="Car image">
-			</div>
-			<div class="info-col">
-				<h1 id="detailTitle">Car Model</h1>
-				<p id="detailDesc">Description will load here.</p>
-				<p class="price" id="detailPrice">$0</p>
-				<div class="detail-actions">
-					<button id="primaryAction" class="btn primary">Rent / Buy</button>
-					<a href="index.html" class="btn ghost">Back</a>
-				</div>
-			</div>
-		</div>
-	</main>
+    <!-- Main Content -->
+    <main class="details container">
+        <div class="details-grid glass">
+            <div class="image-col">
+                {% if car.photo %}
+                    <img src="{{ car.photo.url }}" alt="{{ car.model }}">
+                {% else %}
+                    <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#111;color:#ddd">
+                        No image
+                    </div>
+                {% endif %}
+            </div>
 
-	<!-- reuse modal overlay -->
-	<div id="modalOverlay" class="modal-overlay hidden">
-		<div class="modal glass" id="authModal">
-			<button class="modal-close" id="modalClose">&times;</button>
-			<div class="modal-content" id="modalContent">
-				<form id="loginForm" class="auth-form">
-					<h3>Member Login</h3>
-					<label>Email</label>
-					<input type="email" id="loginEmail2" required>
-					<label>Password</label>
-					<input type="password" id="loginPass2" required>
-					<button class="btn primary" type="submit">Login</button>
-				</form>
+            <div class="info-col">
+                <h1>{{ car.model }}</h1>
+                <p>{{ car.description }}</p>
+                <p class="price">{{ car.price_display }}</p>
 
-				<form id="signupForm" class="auth-form hidden">
-					<h3>Create Account</h3>
-					<label>Full Name</label>
-					<input type="text" id="signupName2" required>
-					<label>Email</label>
-					<input type="email" id="signupEmail2" required>
-					<label>Password</label>
-					<input type="password" id="signupPass2" required>
-					<button class="btn primary" type="submit">Sign Up</button>
-				</form>
-			</div>
-		</div>
-	</div>
+                <p style="margin-top:1rem; color:var(--muted);">
+                    You must login or create an account to book this car.
+                </p>
+                <div class="detail-actions">
+                    <button id="loginBtn2" class="btn ghost">Login</button>
+                    <button id="signupBtn2" class="btn primary">Sign Up</button>
+                </div>
+            </div>
+        </div>
+    </main>
 
-	<script src="script.js"></script>
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">© AutoWave — Smooth rides, clear deals.</div>
+    </footer>
+
+    <!-- Login Modal -->
+    <div id="loginOverlay" class="modal-overlay hidden">
+        <div class="modal" id="loginModal">
+            <button class="modal-close" id="loginClose">&times;</button>
+            <div class="modal-content">
+                <form id="loginFormIndex" class="auth-form" method="post" action="{% url 'login' %}">
+                    {% csrf_token %}
+                    <h3 style="color:#e6eef8">Member Login</h3>
+                    <label>Email</label>
+                    <input type="email" name="email" placeholder="you@example.com" required>
+                    <label>Password</label>
+                    <input type="password" name="password" placeholder="Your password" required>
+                    <button class="btn primary" type="submit">Login</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Signup Modal -->
+    <div id="signupOverlay" class="modal-overlay hidden">
+        <div class="modal" id="signupModal">
+            <button class="modal-close" id="signupClose">&times;</button>
+            <div class="modal-content">
+                <form id="signupFormIndex" class="auth-form" method="post" action="{% url 'signup' %}">
+                    {% csrf_token %}
+                    <h3 style="color:#e6eef8">Create Account</h3>
+                    <label>Full Name</label>
+                    <input type="text" name="name" placeholder="Your name" required>
+                    <label>Email</label>
+                    <input type="email" name="email" placeholder="you@example.com" required>
+                    <label>Password</label>
+                    <input type="password" name="password" placeholder="Choose a password" required>
+                    <button class="btn primary" type="submit">Sign Up</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- JS -->
+    <script src="{% static 'js/home.js' %}"></script>
+    <script>
+        // Make secondary buttons open the same modal
+        const loginBtn2 = document.getElementById('loginBtn2');
+        const signupBtn2 = document.getElementById('signupBtn2');
+
+        loginBtn2.addEventListener('click', () => document.getElementById('loginOverlay').classList.remove('hidden'));
+        signupBtn2.addEventListener('click', () => document.getElementById('signupOverlay').classList.remove('hidden'));
+    </script>
 </body>
 </html>

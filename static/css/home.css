@@ -1,0 +1,300 @@
+/* ============================
+   GLOBAL
+============================ */
+html, body {
+	scroll-behavior: smooth;
+	-webkit-overflow-scrolling: touch;
+	scrollbar-gutter: stable;
+	margin: 0;
+	padding: 0;
+	font-family: system-ui, sans-serif;
+	background: #04070d;
+	color: #e6eef8;
+}
+
+/* Container */
+.container {
+	max-width: 1100px;
+	margin: 0 auto;
+	padding: 1rem;
+}
+
+/* ============================
+   TOPBAR
+============================ */
+.topbar {
+	position: sticky;
+	top: 0;
+	background: rgba(6, 10, 18, 0.65);
+	backdrop-filter: blur(12px);
+	border-bottom: 1px solid rgba(255,255,255,0.06);
+	z-index: 50;
+}
+
+.topbar a {
+	color: #d9e4f0;
+	text-decoration: none;
+	font-weight: 500;
+}
+
+.nav-pro {
+	color: #5ef0c6 !important;
+	font-weight: 700;
+}
+
+/* Auth Buttons */
+.btn {
+	padding: .55rem 1rem;
+	border-radius: 8px;
+	font-weight: 600;
+	cursor: pointer;
+	border: none;
+}
+
+.btn.primary {
+	background: linear-gradient(90deg, #5ef0c6, #60a5fa);
+	color: #03121a;
+}
+
+.btn.ghost {
+	background: rgba(255,255,255,0.06);
+	color: #e6eef8;
+	border: 1px solid rgba(255,255,255,0.08);
+}
+
+/* ============================
+   MODAL OVERLAY
+============================ */
+.modal-overlay {
+	backdrop-filter: blur(6px);
+	background: rgba(0, 0, 0, 0.45);
+	transition: opacity .22s ease, visibility .22s ease;
+	opacity: 1;
+	visibility: visible;
+	pointer-events: auto;
+	position: fixed;
+	inset: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.modal-overlay.hidden {
+	opacity: 0;
+	visibility: hidden;
+	pointer-events: none;
+}
+
+/* Modal Box */
+.modal {
+	background: rgba(6, 10, 18, 0.76);
+	color: #e6eef8;
+	backdrop-filter: blur(10px) saturate(1.05);
+	border: 1px solid rgba(255, 255, 255, 0.04);
+	border-radius: 12px;
+	width: 92%;
+	max-width: 420px;
+	padding: 1.5rem;
+	position: relative;
+	box-shadow: 0 28px 80px rgba(2, 6, 23, 0.75);
+	transform: translateY(8px) scale(.996);
+	transition: transform .22s cubic-bezier(.2, .9, .2, 1),
+				opacity .18s ease;
+	opacity: 0;
+}
+
+.modal-overlay:not(.hidden) .modal {
+	opacity: 1;
+	transform: translateY(0) scale(1);
+}
+
+/* Close Button */
+.modal-close {
+	position: absolute;
+	top: 8px;
+	right: 12px;
+	background: none;
+	border: none;
+	font-size: 1.7rem;
+	font-weight: 700;
+	color: #e6eef8;
+	cursor: pointer;
+}
+
+/* ============================
+   FORM
+============================ */
+.auth-form label {
+	color: rgba(230, 238, 248, 0.9);
+	font-weight: 600;
+	margin-top: .7rem;
+	display: block;
+}
+
+.auth-form input {
+	background: rgba(255, 255, 255, 0.03);
+	color: #e6eef8;
+	border-radius: 8px;
+	padding: .6rem;
+	border: 1px solid rgba(255, 255, 255, 0.04);
+	margin-top: .3rem;
+	width: 100%;
+}
+
+.auth-form input::placeholder {
+	color: rgba(230, 238, 248, 0.55);
+}
+
+/* ============================
+   REVEAL ANIMATION
+============================ */
+.reveal {
+	opacity: 0;
+	transform: translateX(var(--reveal-x, 0));
+	transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.reveal.in-view {
+	opacity: 1;
+	transform: translateX(0);
+}
+
+.reveal[data-direction="left"] {
+	--reveal-x: -30px;
+}
+
+.reveal[data-direction="right"] {
+	--reveal-x: 30px;
+}
+
+/* Reduce motion */
+@media (prefers-reduced-motion: reduce) {
+	.reveal {
+		transition: none;
+	}
+}
+
+/* Fullscreen hero background */
+.hero-banner {
+    width: 100%;
+    height: 100vh; /* full desktop height */
+    background-image: url("/static/image/tem.jpg");
+    /* OR Django templated version if using inline style */
+    /* background-image: url("{% static 'image/tem.jpg' %}"); */
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+/* Left side content */
+.hero-content {
+    max-width: 480px;
+    padding: 2rem;
+    margin-left: 4rem;
+    background: rgba(0,0,0,0.45);
+    backdrop-filter: blur(6px);
+    border-radius: 14px;
+    color: #e6eef8;
+    animation: fadeIn 0.8s ease;
+}
+
+.hero-content h1 {
+    font-size: 2.5rem;
+    margin-bottom: .5rem;
+    font-weight: 700;
+}
+
+.hero-content p {
+    font-size: 1.1rem;
+    line-height: 1.5;
+    margin-bottom: 1.2rem;
+}
+
+/* Smooth fade */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .hero-content {
+        margin-left: 1rem;
+        margin-right: 1rem;
+    }
+}
+
+
+/* ============================
+   PRO SECTION
+============================ */
+/* .pro-section {
+	padding: 4rem 0;
+	text-align: center;
+}
+
+/* PRO Plans */
+.plan {
+	padding: 1rem;
+	border-radius: 12px;
+	background: rgba(255,255,255,0.03);
+	border: 1px solid rgba(255,255,255,0.05);
+}
+
+.plan-price {
+	font-size: 1.4rem;
+	font-weight: 700;
+	margin: .6rem 0;
+}
+
+.plan-features {
+	list-style: none;
+	padding: 0;
+	margin-top: 1rem;
+}
+
+.plan-features li {
+	margin: .4rem 0;
+} */
+
+/* ============================
+   CAR CARDS
+============================ */
+.card {
+	border-radius: 14px;
+	overflow: hidden;
+	background: rgba(255,255,255,0.03);
+	border: 1px solid rgba(255,255,255,0.05);
+}
+
+.card img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.card-body h3 {
+	margin: 0 0 .4rem 0;
+}
+
+.price {
+	font-weight: 700;
+	color: #5ef0c6;
+	margin-bottom: .5rem;
+}
+
+/* ============================
+   FOOTER
+============================ */
+.footer {
+	margin-top: 3rem;
+	padding: 1rem;
+	text-align: center;
+	color: #98a2b3;
+	border-top: 1px solid rgba(255,255,255,0.06);
+}
