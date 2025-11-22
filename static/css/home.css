@@ -79,6 +79,11 @@ html, body {
 	align-items: center;
 }
 
+/* When booking modal is opened in buy mode, hide rent-only fields */
+#bookingOverlay.mode-buy .rent-only {
+	display: none !important;
+}
+
 .modal-overlay.hidden {
 	opacity: 0;
 	visibility: hidden;

@@ -36,6 +36,14 @@
 	if(loginClose) loginClose.addEventListener('click', ()=> closeOverlay(loginOverlay));
 	if(signupClose) signupClose.addEventListener('click', ()=> closeOverlay(signupOverlay));
 
+	// booking modal close/cancel handling (if present)
+	const bookingOverlay = document.getElementById('bookingOverlay');
+	const bookingClose = document.getElementById('bookingClose');
+	const bookingCancel = document.getElementById('bookingCancel');
+
+	if(bookingClose) bookingClose.addEventListener('click', ()=> closeOverlay(bookingOverlay));
+	if(bookingCancel) bookingCancel.addEventListener('click', (e)=>{ e.preventDefault(); closeOverlay(bookingOverlay); });
+
 	[loginOverlay, signupOverlay].forEach(ov=>{
 		if(!ov) return;
 		ov.addEventListener('click', (e)=>{
@@ -81,15 +89,36 @@
 (function(){
 	document.querySelectorAll('.rent-btn').forEach(btn=>{
 		btn.addEventListener('click', ()=>{
+			const bookingOverlay = document.getElementById('bookingOverlay');
 			const loginOverlay = document.getElementById('loginOverlay');
-			if(loginOverlay) loginOverlay.classList.remove('hidden');
+			const carId = btn.dataset.id;
+			if(bookingOverlay){
+				// On user page: open booking modal and set car id
+				bookingOverlay.classList.remove('mode-buy');
+				const carInput = bookingOverlay.querySelector('input[name="car_id"]');
+				if(carInput) carInput.value = carId;
+				bookingOverlay.classList.remove('hidden');
+			} else if(loginOverlay){
+				// On home page (no booking modal available): show login
+				loginOverlay.classList.remove('hidden');
+			}
 		});
 	});
 
 	document.querySelectorAll('.buy-btn').forEach(btn=>{
 		btn.addEventListener('click', ()=>{
+			const bookingOverlay = document.getElementById('bookingOverlay');
 			const loginOverlay = document.getElementById('loginOverlay');
-			if(loginOverlay) loginOverlay.classList.remove('hidden');
+			const carId = btn.dataset.id;
+			if(bookingOverlay){
+				// Open booking modal in buy mode: hide rent-only fields
+				bookingOverlay.classList.add('mode-buy');
+				const carInput = bookingOverlay.querySelector('input[name="car_id"]');
+				if(carInput) carInput.value = carId;
+				bookingOverlay.classList.remove('hidden');
+			} else if(loginOverlay){
+				loginOverlay.classList.remove('hidden');
+			}
 		});
 	});
 })();

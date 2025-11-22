@@ -1,0 +1,16 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Booking Received</title>
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+</head>
+<body>
+<div class="container" style="padding:3rem">
+    <h2>Booking Received</h2>
+    <p>Thank you, {{ booking.full_name }}. Your booking has been received. We will contact you at {{ booking.mobile }}.</p>
+    <a href="{% url 'home' %}" class="btn ghost">Back to Home</a>
+</div>
+</body>
+</html>

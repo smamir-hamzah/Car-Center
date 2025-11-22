@@ -16,8 +16,8 @@
                 <a href="{% url 'home' %}#about">About</a>
             </nav>
             <div class="auth">
-                <button id="loginBtn" class="btn ghost">Login</button>
-                <button id="signupBtn" class="btn primary">Sign Up</button>
+                <a href="{% url 'home' %}" class="btn ghost">Logout</a>
+              
             </div>
         </div>
     </header>
@@ -44,8 +44,15 @@
                     You must login or create an account to book this car.
                 </p>
                 <div class="detail-actions">
-                    <button id="loginBtn2" class="btn ghost">Login</button>
-                    <button id="signupBtn2" class="btn primary">Sign Up</button>
+                    <!-- Show only appropriate action based on car type -->
+                    {% if car.car_type == 'rent' %}
+                        <button class="btn primary rent-btn" data-id="{{ car.id }}" style="margin-left:.5rem">Rent</button>
+                    {% elif car.car_type == 'sale' %}
+                        <button class="btn primary buy-btn" data-id="{{ car.id }}" style="margin-left:.5rem">Buy</button>
+                    {% else %}
+                        <button class="btn primary rent-btn" data-id="{{ car.id }}" style="margin-left:.5rem">Rent</button>
+                        <button class="btn primary buy-btn" data-id="{{ car.id }}" style="margin-left:.5rem">Buy</button>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -89,6 +96,38 @@
                     <label>Password</label>
                     <input type="password" name="password" placeholder="Choose a password" required>
                     <button class="btn primary" type="submit">Sign Up</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Booking Modal (same pattern as user.html) -->
+    <div id="bookingOverlay" class="modal-overlay hidden">
+        <div class="modal" id="bookingModal">
+            <button class="modal-close" id="bookingClose">&times;</button>
+            <div class="modal-content">
+                <form id="bookingForm" class="auth-form" method="post" action="{% url 'book' %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <h3 style="color:#e6eef8">Book this Car</h3>
+                    <input type="hidden" name="car_id" value="{{ car.id }}">
+                    <label>Full Name</label>
+                    <input type="text" name="full_name" required>
+                    <label>Mobile Number</label>
+                    <input type="text" name="mobile" required>
+                    <label class="rent-only">Location</label>
+                    <input class="rent-only" type="text" name="location">
+                    <label class="rent-only">NID / Passport Number</label>
+                    <input class="rent-only" type="text" name="id_number">
+                    <label class="rent-only">Driving License Number</label>
+                    <input class="rent-only" type="text" name="driving_license_number">
+                    <label class="rent-only">Driving License Photo</label>
+                    <input class="rent-only" type="file" name="driving_license_photo" accept="image/*">
+                    <label>Your Photo</label>
+                    <input type="file" name="client_photo" accept="image/*">
+                    <div style="margin-top:1rem;display:flex;gap:.5rem;justify-content:flex-end;">
+                        <button type="button" class="btn ghost" id="bookingCancel">Cancel</button>
+                        <button type="submit" class="btn primary">Submit Booking</button>
+                    </div>
                 </form>
             </div>
         </div>
