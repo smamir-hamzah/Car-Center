@@ -120,13 +120,39 @@
 
 		<section id="reviews" class="container glass reveal" data-direction="left">
 			<h2>What Our Customers Say</h2>
-			<div class="reviews-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-top:1rem;">
-				{% for r in reviews %}
-				<div class="review-card glass" style="padding:1rem;">
-					<p class="review-text">“{{ r.text }}”</p>
-					<p class="review-user">— {{ r.name }}, ★{{ r.rating }}</p>
+			<div class="reviews-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;margin-top:1.5rem;">
+				{% if reviews %}
+					{% for r in reviews %}
+					<div class="review-card glass">
+						<div class="review-header">
+							<div class="review-user-info">
+								<p class="review-user-name">
+									{% if r.user %}
+										{{ r.user.get_full_name|default:r.user.username }}
+									{% else %}
+										Anonymous
+									{% endif %}
+								</p>
+								{% if r.created_at %}
+								<p class="review-date">{{ r.created_at|date:"M d, Y" }}</p>
+								{% endif %}
+							</div>
+							<div class="review-rating">
+								{% if r.rating %}
+									{% for i in "x"|rjust:r.rating %}★{% endfor %}
+								{% else %}
+									★★★★★
+								{% endif %}
+							</div>
+						</div>
+						<p class="review-text">{{ r.text }}</p>
+					</div>
+					{% endfor %}
+				{% else %}
+				<div class="review-empty" style="grid-column: 1 / -1; text-align: center; color: rgba(230, 238, 248, 0.5); padding: 2rem;">
+					<p>No reviews yet. Be the first to share your experience!</p>
 				</div>
-				{% endfor %}
+				{% endif %}
 			</div>
 		</section>
 

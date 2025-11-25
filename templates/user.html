@@ -10,6 +10,19 @@
 	<script src="https://unpkg.com/htmx.org@1.10.0"></script>
 </head>
 <body hx-get="." hx-trigger="every 12s" hx-swap="outerHTML">
+	<!-- Loading Overlay -->
+	<div id="loadingOverlay" class="loading-overlay hidden">
+		<div class="loading-container">
+			<div class="spinner"></div>
+			<p class="loading-text">Loading...</p>
+		</div>
+	</div>
+
+	{% if request.user.is_authenticated %}
+	<div id="welcomeNotification" class="welcome-notification">
+		Welcome back, {{ request.user.get_full_name|default:request.user.username }}! 🎉
+	</div>
+	{% endif %}
 
 
 	<header class="topbar">
@@ -18,10 +31,11 @@
 
 			<nav class="main-nav" style="display:flex;gap:1rem;">
 				<a href="#home">Home</a>
+				<a href="#rent">Rent</a>
+				<a href="#sale">Buy</a>
 				<a href="#about">About Us</a>
 				<a href="#contact">Contact Us</a>
-				<a href="#location">Location</a>
-				<a href="#cars">Cars</a>
+				<a href="#location">Location</a>			
 				<a href="#process">How It Works</a>
 				<a href="#reviews">Reviews</a>
 
@@ -49,21 +63,23 @@
     </div>
 </section>
 
-<section id="cars" class="cars container">
-    <h2>Available for Rent</h2>
-    <div class="grid" id="rentCars" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;">
+<section id="rent" class="cars-rent container glass reveal" data-direction="left">
+    <div class="cars-section-header">
+        <h2>Available for Rent</h2>
+    </div>
+    <div class="grid" id="rentCars" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.5rem;">
 		{% for car in rentCars %}
-		<div class="card glass reveal" data-direction="left" data-id="{{ car.id }}">
-            <div class="card-media" style="height:160px;overflow:hidden;">
+		<div class="car-card glass reveal" data-direction="left" data-id="{{ car.id }}">
+            <div class="car-card-media" style="height:160px;overflow:hidden;position:relative;">
                 {% if car.photo %}
-                <img class="card-main" src="{{ car.photo.url }}" alt="{{ car.model }}" style="width:100%;height:100%;object-fit:cover;">
+                <img class="card-main" src="{{ car.photo.url }}" alt="{{ car.model }}" style="width:100%;height:100%;object-fit:cover;transition:transform 0.3s ease;">
                 {% else %}
                 <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#111;color:#ddd">No image</div>
                 {% endif %}
             </div>
-            <div class="card-body" style="padding:1rem">
-                <h3>{{ car.model }}</h3>
-                <p class="price">{{ car.price_display }}</p>
+            <div class="car-card-body" style="padding:1.5rem">
+                <h3 style="color:#5ef0c6;margin:0 0 0.5rem 0;font-size:1.15rem;font-weight:700;">{{ car.model }}</h3>
+                <p class="price" style="color:rgba(230,238,248,0.7);font-size:0.9rem;margin:0 0 1rem 0;">{{ car.price_display }}</p>
 
 				{% if focus_car_id and car.id == focus_car_id %}
 					{# If focused, show only the relevant action for thisu car type #}
@@ -81,21 +97,25 @@
         </div>
         {% endfor %}
     </div>
+</section>
 
-    <h2 style="margin-top:2.25rem;">Cars for Sale</h2>
-    <div class="grid" id="saleCars" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;">
+<section id="sale" class="cars-sale container glass reveal" data-direction="right">
+    <div class="cars-section-header">
+        <h2>Cars for Sale</h2>
+    </div>
+    <div class="grid" id="saleCars" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.5rem;">
         {% for car in saleCars %}
-        <div class="card glass reveal" data-direction="right" data-id="{{ car.id }}">
-            <div class="card-media" style="height:160px;overflow:hidden;">
+        <div class="car-card glass reveal" data-direction="right" data-id="{{ car.id }}">
+            <div class="car-card-media" style="height:160px;overflow:hidden;position:relative;">
                 {% if car.photo %}
-                <img class="card-main" src="{{ car.photo.url }}" alt="{{ car.model }}" style="width:100%;height:100%;object-fit:cover;">
+                <img class="card-main" src="{{ car.photo.url }}" alt="{{ car.model }}" style="width:100%;height:100%;object-fit:cover;transition:transform 0.3s ease;">
                 {% else %}
                 <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#111;color:#ddd">No image</div>
                 {% endif %}
             </div>
-            <div class="card-body" style="padding:1rem">
-                <h3>{{ car.model }}</h3>
-                <p class="price">{{ car.price_display }}</p>
+            <div class="car-card-body" style="padding:1.5rem">
+                <h3 style="color:#5ef0c6;margin:0 0 0.5rem 0;font-size:1.15rem;font-weight:700;">{{ car.model }}</h3>
+                <p class="price" style="color:rgba(230,238,248,0.7);font-size:0.9rem;margin:0 0 1rem 0;">{{ car.price_display }}</p>
 
 				{% if focus_car_id and car.id == focus_car_id %}
 					{% if car.car_type == 'rent' %}
@@ -256,58 +276,73 @@
 	</main>
 
 	<!-- My Bookings Section -->
-<section id="my-bookings" class="container" style="margin-top:2rem;margin-bottom:2rem;">
+<section id="my-bookings" class="container" style="margin-top:3rem;margin-bottom:2rem;">
 	<h2>My Bookings</h2>
 	{% if my_bookings %}
-		<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1rem;margin-top:1rem;">
+		<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.5rem;margin-top:2rem;">
 			{% for booking in my_bookings %}
-				<div class="card" style="padding:1rem;border: 1px solid rgba(255,255,255,0.06);">
-					<div style="margin-bottom:1rem;">
-						<h4 style="color:#5ef0c6;margin:0 0 0.5rem 0;">
+				<div class="card" style="padding:1.5rem;border: 1px solid rgba(255,255,255,0.08);">
+					<div style="margin-bottom:1.25rem;">
+						<h4 style="color:#5ef0c6;margin:0 0 0.75rem 0;font-size:1.15rem;">
 							{% if booking.car %}
 								{{ booking.car.model }}
 							{% else %}
 								Booking #{{ booking.id }}
 							{% endif %}
 						</h4>
-						<p style="color:rgba(230,238,248,0.7);font-size:0.9rem;margin:0;">
-							<strong>ID:</strong> #{{ booking.id }}<br>
-							<strong>Type:</strong> {{ booking.get_request_type_display }}<br>
-							<strong>Status:</strong> 
-							<span class="booking-status {% if booking.status == 'confirmed' %}confirmed{% elif booking.status == 'completed' %}completed{% elif booking.status == 'rejected' %}rejected{% elif booking.status == 'cancelled' %}cancelled{% elif booking.status == 'cancel_requested' %}cancel-requested{% else %}pending{% endif %}">
-								{{ booking.get_status_display }}
-							</span>
-							{% if booking.status == 'completed' %}<br><strong style="color:#3b82f6;">✓ Delivery is Complete</strong>{% endif %}
-							{% if booking.status == 'cancelled' %}<br><strong style="color:#ef4444;">✗ Booking Cancelled</strong>{% endif %}
-							{% if booking.status == 'rejected' %}<br><strong style="color:#ef4444;">✗ Booking Rejected</strong>{% endif %}
-							<br>
+						<div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;color:rgba(230,238,248,0.8);font-size:0.9rem;margin-bottom:1rem;">
+							<div style="background:rgba(94,240,198,0.08);padding:0.75rem;border-radius:6px;border-left:2px solid #5ef0c6;">
+								<div style="font-size:0.75rem;color:rgba(230,238,248,0.6);margin-bottom:0.25rem;text-transform:uppercase;font-weight:600;">ID</div>
+								<div style="font-weight:700;color:#5ef0c6;">#{{ booking.id }}</div>
+							</div>
+							<div style="background:rgba(59,130,246,0.08);padding:0.75rem;border-radius:6px;border-left:2px solid #3b82f6;">
+								<div style="font-size:0.75rem;color:rgba(230,238,248,0.6);margin-bottom:0.25rem;text-transform:uppercase;font-weight:600;">Type</div>
+								<div style="font-weight:700;color:#3b82f6;">{{ booking.get_request_type_display }}</div>
+							</div>
+						</div>
+						<div style="background:rgba(255,255,255,0.04);padding:1rem;border-radius:8px;border:1px solid rgba(255,255,255,0.08);">
+							<div style="font-size:0.8rem;color:rgba(230,238,248,0.6);margin-bottom:0.5rem;text-transform:uppercase;font-weight:600;">Status</div>
+							<div style="display:flex;align-items:center;gap:0.5rem;">
+								<span class="booking-status {% if booking.status == 'confirmed' %}confirmed{% elif booking.status == 'completed' %}completed{% elif booking.status == 'rejected' %}rejected{% elif booking.status == 'cancelled' %}cancelled{% elif booking.status == 'cancel_requested' %}cancel-requested{% else %}pending{% endif %}" style="font-size:1.1rem;">
+									{{ booking.get_status_display }}
+								</span>
+								{% if booking.status == 'completed' %}<span style="color:#3b82f6;font-size:0.8rem;">✓ Delivery Complete</span>{% endif %}
+								{% if booking.status == 'cancelled' %}<span style="color:#ef4444;font-size:0.8rem;">✗ Cancelled</span>{% endif %}
+								{% if booking.status == 'rejected' %}<span style="color:#ef4444;font-size:0.8rem;">✗ Rejected</span>{% endif %}
+							</div>
+						</div>
+						<p style="color:rgba(230,238,248,0.6);font-size:0.8rem;margin:1rem 0 0 0;">
 							<strong>Created:</strong> {{ booking.created_at|date:"M d, Y H:i" }}
 						</p>
 					</div>
 
 					<!-- Show Cancel button only for confirmed bookings (not pending, not already cancelled/rejected) -->
 					{% if booking.status == 'confirmed' %}
-						<form method="post" action="{% url 'booking_cancel_request' booking.id %}" style="display:inline;">
+						<form method="post" action="{% url 'booking_cancel_request' booking.id %}" style="display:inline;width:100%;">
 							{% csrf_token %}
-							<button class="btn ghost" type="submit" style="width:100%;">Request Cancellation</button>
+							<button class="btn ghost" type="submit" style="width:100%;margin-bottom:0.5rem;font-size:0.9rem;">Request Cancellation</button>
 						</form>
-						<p style="font-size:0.85rem;color:rgba(230,238,248,0.6);margin-top:0.5rem;">
-							If you need to cancel, our members will review your request.
+						<p style="font-size:0.8rem;color:rgba(230,238,248,0.5);margin:0;text-align:center;">
+							Our team will review your request
 						</p>
 					{% else %}
-						<!-- Disabled for pending/cancelled/completed/rejected bookings -->
-						<button class="btn ghost" disabled style="width:100%;opacity:0.5;cursor:not-allowed;">
-							{% if booking.status == 'pending' %}Pending Review{% elif booking.status == 'cancel_requested' %}Cancellation Pending{% else %}No Actions Available{% endif %}
+						<button class="btn ghost" disabled style="width:100%;opacity:0.4;cursor:not-allowed;font-size:0.9rem;">
+							{% if booking.status == 'pending' %}⏳ Pending Review{% elif booking.status == 'cancel_requested' %}⏳ Cancel Pending{% else %}—{% endif %}
 						</button>
-						<p style="font-size:0.85rem;color:rgba(230,238,248,0.4);margin-top:0.5rem;">
-							{% if booking.status == 'pending' %}Waiting for staff to review your booking.{% elif booking.status == 'cancel_requested' %}Your cancellation request is under review.{% else %}This booking cannot be modified.{% endif %}
+						<p style="font-size:0.75rem;color:rgba(230,238,248,0.4);margin:0.5rem 0 0 0;text-align:center;">
+							{% if booking.status == 'pending' %}Waiting for staff review{% elif booking.status == 'cancel_requested' %}Cancellation under review{% else %}No actions available{% endif %}
 						</p>
 					{% endif %}
 				</div>
 			{% endfor %}
 		</div>
 	{% else %}
-		<p style="color:rgba(230,238,248,0.6);margin-top:1rem;">You have no bookings yet. <a href="#cars" style="color:#5ef0c6;">Browse cars</a> to get started.</p>
+		<div style="text-align:center;padding:3rem 1rem;background:rgba(94,240,198,0.05);border:2px dashed rgba(94,240,198,0.3);border-radius:12px;margin-top:2rem;">
+			<p style="color:rgba(230,238,248,0.6);font-size:1.05rem;margin:0;">
+				You have no bookings yet. 
+				<a href="#cars" style="color:#5ef0c6;text-decoration:none;font-weight:700;">Browse cars</a> to get started!
+			</p>
+		</div>
 	{% endif %}
 </section>
 

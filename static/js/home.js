@@ -1,5 +1,41 @@
 /* home.js — adapted for Django template usage */
 
+/* Welcome Back Notification */
+(function(){
+	const welcomeNotif = document.getElementById('welcomeNotification');
+	if(welcomeNotif){
+		// Auto-remove after animation completes (4s)
+		setTimeout(()=>{
+			welcomeNotif.remove();
+		}, 4000);
+	}
+})();
+
+/* Loading Overlay Handler */
+(function(){
+	const loadingOverlay = document.getElementById('loadingOverlay');
+	
+	// Show loading when any login/signup form is submitted
+	document.addEventListener('submit', (e)=>{
+		const form = e.target;
+		const formId = form.id;
+		
+		// Show loading for login and signup forms
+		if(formId && (formId.includes('loginForm') || formId.includes('signupForm'))){
+			if(loadingOverlay){
+				loadingOverlay.classList.remove('hidden');
+			}
+		}
+	});
+	
+	// Hide loading when page reloads (login successful)
+	window.addEventListener('load', ()=>{
+		if(loadingOverlay){
+			loadingOverlay.classList.add('hidden');
+		}
+	});
+})();
+
 /* Modal handling: support separate login/signup overlays */
 (function(){
 	const loginOverlay = document.getElementById('loginOverlay');

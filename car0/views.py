@@ -17,18 +17,12 @@ from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 
 
-
-
 def home(request):
     rentCars = Car.objects.filter(car_type='rent', available=True)[:50]
     saleCars = Car.objects.filter(car_type='sale', available=True)[:50]
 
-    # Example reviews for template rendering (you can replace with a Review model later)
-    reviews = [
-        {"text": "Great service and clean cars.", "name": "Aisha", "rating": 5},
-        {"text": "Smooth booking experience.", "name": "Rafi", "rating": 4},
-        {"text": "Helpful staff and quick pickup.", "name": "Tania", "rating": 5},
-    ]
+    # Get reviews from database
+    reviews = Review.objects.all().order_by('-created_at')[:6]
 
     context = {
         "rentCars": rentCars,
@@ -114,14 +108,8 @@ def userhtml(request):
     rentCars = Car.objects.filter(car_type='rent', available=True)[:50]
     saleCars = Car.objects.filter(car_type='sale', available=True)[:50]
     
-    # Fetch reviews from database, fallback to sample reviews if empty
-    reviews = Review.objects.all().order_by('-created_at')[:6]
-    if not reviews:
-        reviews = [
-            {"text": "Great service and clean cars.", "name": "Aisha", "rating": 5},
-            {"text": "Smooth booking experience.", "name": "Rafi", "rating": 4},
-            {"text": "Helpful staff and quick pickup.", "name": "Tania", "rating": 5},
-        ]
+    # Fetch reviews from database, always fetch with select_related for user info
+    reviews = Review.objects.select_related('user').all().order_by('-created_at')[:6]
 
     focus_car = request.GET.get('from_car')
     try:
@@ -541,6 +529,3 @@ def submit_review(request):
         messages.success(request, 'Your review has been posted! Thank you!')
     
     return redirect('userhtml')
-    
-    messages.success(request, f'Booking #{booking.id} cancellation denied')
-    return redirect('assistant_dashboard')

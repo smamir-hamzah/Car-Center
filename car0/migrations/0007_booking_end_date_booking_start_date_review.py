@@ -12,16 +12,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AddField(
-            model_name='booking',
-            name='end_date',
-            field=models.DateField(blank=True, null=True),
-        ),
-        migrations.AddField(
-            model_name='booking',
-            name='start_date',
-            field=models.DateField(blank=True, null=True),
-        ),
+        # Skip AddField for start_date and end_date since they already exist
         migrations.CreateModel(
             name='Review',
             fields=[
