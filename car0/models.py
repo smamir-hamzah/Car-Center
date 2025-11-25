@@ -99,3 +99,27 @@ class Booking(models.Model):
 
     def __str__(self):
         return f"Booking for {self.full_name} ({self.mobile}) - {self.car_id or 'No car'}"
+
+
+class Review(models.Model):
+    RATING_CHOICES = [
+        (1, '★'),
+        (2, '★★'),
+        (3, '★★★'),
+        (4, '★★★★'),
+        (5, '★★★★★'),
+    ]
+    
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='reviews')
+    text = models.TextField(max_length=500)
+    rating = models.IntegerField(choices=RATING_CHOICES, default=5)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name = _("Review")
+        verbose_name_plural = _("Reviews")
+    
+    def __str__(self):
+        return f"Review by {self.user.username} - {self.rating} stars"

@@ -3,6 +3,7 @@ from .models import Car
 from django.contrib.auth.admin import UserAdmin
 from .models import CustomUser
 from .models import Booking
+from .models import Review
 
 # Register your models here.
 
@@ -28,6 +29,14 @@ class CarAdmin(admin.ModelAdmin):
 class BookingAdmin(admin.ModelAdmin):
     list_display = ('id', 'car', 'requester', 'full_name', 'mobile', 'request_type', 'status', 'created_at')
     list_filter = ('status', 'request_type', 'created_at')
+
+
+@admin.register(Review)
+class ReviewAdmin(admin.ModelAdmin):
+    list_display = ('user', 'rating', 'created_at')
+    list_filter = ('rating', 'created_at')
+    search_fields = ('user__username', 'text')
+    readonly_fields = ('created_at', 'updated_at')
     search_fields = ('full_name', 'mobile', 'id_number', 'car__model')
     readonly_fields = ('created_at',)
     # # Show all fields except created_at as editable

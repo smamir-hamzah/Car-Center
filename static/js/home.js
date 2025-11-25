@@ -264,3 +264,54 @@ document.addEventListener("DOMContentLoaded", function () {
     };
 
 });
+
+/* Star Rating Selector Enhancement */
+(function(){
+	const starInput = document.getElementById('starInput');
+	if(!starInput) return;
+	
+	const labels = starInput.querySelectorAll('label');
+	const radios = starInput.querySelectorAll('input[type="radio"]');
+	
+	// Set initial state
+	const checkedRadio = starInput.querySelector('input[type="radio"]:checked');
+	if(checkedRadio){
+		const checkedValue = parseInt(checkedRadio.value);
+		updateStarDisplay(checkedValue);
+	}
+	
+	// Handle hover effects
+	labels.forEach((label, index) => {
+		label.addEventListener('mouseenter', () => {
+			const value = parseInt(radios[index].value);
+			updateStarDisplay(value);
+		});
+		
+		label.addEventListener('click', () => {
+			radios[index].checked = true;
+			const value = parseInt(radios[index].value);
+			updateStarDisplay(value);
+		});
+	});
+	
+	starInput.addEventListener('mouseleave', () => {
+		const checkedRadio = starInput.querySelector('input[type="radio"]:checked');
+		if(checkedRadio){
+			const value = parseInt(checkedRadio.value);
+			updateStarDisplay(value);
+		}
+	});
+	
+	function updateStarDisplay(rating){
+		labels.forEach((label, index) => {
+			if(index < rating){
+				label.style.color = '#fbbf24';
+				label.style.textShadow = '0 0 8px rgba(251, 191, 36, 0.5)';
+			} else {
+				label.style.color = 'rgba(230, 238, 248, 0.3)';
+				label.style.textShadow = 'none';
+			}
+		});
+	}
+})();
+

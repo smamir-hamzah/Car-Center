@@ -3,7 +3,7 @@ from django.shortcuts import render
 # Create your views here.
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
-from .models import Car, Booking
+from .models import Car, Booking, Review
 from django.shortcuts import redirect
 
 import random
@@ -113,11 +113,15 @@ def booking_view(request):
 def userhtml(request):
     rentCars = Car.objects.filter(car_type='rent', available=True)[:50]
     saleCars = Car.objects.filter(car_type='sale', available=True)[:50]
-    reviews = [
-        {"text": "Great service and clean cars.", "name": "Aisha", "rating": 5},
-        {"text": "Smooth booking experience.", "name": "Rafi", "rating": 4},
-        {"text": "Helpful staff and quick pickup.", "name": "Tania", "rating": 5},
-    ]
+    
+    # Fetch reviews from database, fallback to sample reviews if empty
+    reviews = Review.objects.all().order_by('-created_at')[:6]
+    if not reviews:
+        reviews = [
+            {"text": "Great service and clean cars.", "name": "Aisha", "rating": 5},
+            {"text": "Smooth booking experience.", "name": "Rafi", "rating": 4},
+            {"text": "Helpful staff and quick pickup.", "name": "Tania", "rating": 5},
+        ]
 
     focus_car = request.GET.get('from_car')
     try:
@@ -508,6 +512,35 @@ def deny_cancellation(request, booking_id):
             )
         except Exception:
             pass
+
+
+@login_required(login_url='login')
+def submit_review(request):
+    """Handle review submission from users"""
+    if request.method == 'POST':
+        text = request.POST.get('review_text', '').strip()
+        rating = request.POST.get('review_rating', 5)
+        
+        if not text:
+            messages.error(request, 'Review text cannot be empty.')
+            return redirect('userhtml')
+        
+        try:
+            rating = int(rating)
+            if rating < 1 or rating > 5:
+                rating = 5
+        except (ValueError, TypeError):
+            rating = 5
+        
+        Review.objects.create(
+            user=request.user,
+            text=text,
+            rating=rating
+        )
+        
+        messages.success(request, 'Your review has been posted! Thank you!')
+    
+    return redirect('userhtml')
     
     messages.success(request, f'Booking #{booking.id} cancellation denied')
     return redirect('assistant_dashboard')

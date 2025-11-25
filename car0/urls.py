@@ -18,5 +18,6 @@ urlpatterns = [
     path('assistant/mark-complete/<int:booking_id>/', mark_delivery_complete, name='mark_delivery_complete'),
     path('assistant/approve-cancel/<int:booking_id>/', cancel_booking_confirmed, name='cancel_booking_confirmed'),
     path('assistant/deny-cancel/<int:booking_id>/', deny_cancellation, name='deny_cancellation'),
+    path('review/submit/', submit_review, name='submit_review'),
     path('userhtml/', userhtml, name='userhtml'),
 ]

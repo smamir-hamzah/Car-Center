@@ -139,14 +139,102 @@
 		</section>
 
 		<section id="reviews" class="container glass reveal" data-direction="left">
-			<h2>What Our Customers Say</h2>
-			<div class="reviews-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-top:1rem;">
-				{% for r in reviews %}
-				<div class="review-card glass" style="padding:1rem;">
-					<p class="review-text">“{{ r.text }}”</p>
-					<p class="review-user">— {{ r.name }}, ★{{ r.rating }}</p>
+			<div class="reviews-section-header">
+				<h2>What Our Customers Say</h2>
+				{% if request.user.is_authenticated %}
+				<div class="reviews-stats">
+					<div class="stat">
+						<div class="stat-number">{{ reviews|length }}</div>
+						<div class="stat-label">Total Reviews</div>
+					</div>
 				</div>
-				{% endfor %}
+				{% endif %}
+			</div>
+
+			<!-- Review Submission Form (Only for logged-in users) -->
+			{% if request.user.is_authenticated %}
+			<div class="review-form-container">
+				<h3>Share Your Experience</h3>
+				<form method="post" action="{% url 'submit_review' %}" class="review-form">
+					{% csrf_token %}
+					
+					<div class="form-group">
+						<label for="review_text">Your Review</label>
+						<textarea 
+							id="review_text" 
+							name="review_text" 
+							class="review-textarea" 
+							placeholder="Tell us about your experience with AutoWave..."
+							required></textarea>
+					</div>
+
+					<div class="form-group">
+						<label>Rating</label>
+						<div class="rating-selector">
+							<div class="star-input" id="starInput">
+								<input type="radio" id="star5" name="review_rating" value="5" checked>
+								<label for="star5">★</label>
+								<input type="radio" id="star4" name="review_rating" value="4">
+								<label for="star4">★</label>
+								<input type="radio" id="star3" name="review_rating" value="3">
+								<label for="star3">★</label>
+								<input type="radio" id="star2" name="review_rating" value="2">
+								<label for="star2">★</label>
+								<input type="radio" id="star1" name="review_rating" value="1">
+								<label for="star1">★</label>
+							</div>
+						</div>
+					</div>
+
+					<div class="review-form-buttons">
+						<button type="submit" class="btn primary">Post Review</button>
+					</div>
+				</form>
+			</div>
+			{% else %}
+			<div class="review-form-container" style="text-align: center; border-color: rgba(94, 240, 198, 0.2); background: rgba(94, 240, 198, 0.05);">
+				<p style="color: rgba(230, 238, 248, 0.7); margin: 0;">
+					<a href="{% url 'login' %}" style="color: #5ef0c6; text-decoration: none; font-weight: 600;">Login</a> or 
+					<a href="{% url 'signup' %}" style="color: #5ef0c6; text-decoration: none; font-weight: 600;">Sign up</a> 
+					to share your experience!
+				</p>
+			</div>
+			{% endif %}
+
+			<!-- Reviews Display -->
+			<div class="reviews-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.5rem;margin-top:2rem;">
+				{% if reviews %}
+					{% for r in reviews %}
+					<div class="review-card glass">
+						<div class="review-header">
+							<div class="review-user-info">
+								<p class="review-user-name">
+									{% if r.user %}
+										{{ r.user.get_full_name|default:r.user.username }}
+									{% else %}
+										{{ r.name }}
+									{% endif %}
+								</p>
+								{% if r.created_at %}
+								<p class="review-date">{{ r.created_at|date:"M d, Y" }}</p>
+								{% endif %}
+							</div>
+							<div class="review-rating">
+								{% if r.rating %}
+									{% for i in "x"|rjust:r.rating %}★{% endfor %}
+								{% else %}
+									★★★★★
+								{% endif %}
+							</div>
+						</div>
+						<p class="review-text">{{ r.text }}</p>
+					</div>
+					{% endfor %}
+				{% else %}
+				<div class="review-empty">
+					<p style="color: rgba(230, 238, 248, 0.6);">No reviews yet. Be the first to share your experience!</p>
+				</div>
+				{% endif %}
 			</div>
 		</section>
 
