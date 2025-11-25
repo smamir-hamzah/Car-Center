@@ -410,3 +410,34 @@ html, body {
 	font-size: 0.8rem;
 	color: #3b82f6;
 }
+
+/* ============================
+   BOOKING STATUS COLORS
+============================ */
+.booking-status {
+	font-weight: 600;
+}
+
+.booking-status.confirmed {
+	color: #22c55e;
+}
+
+.booking-status.completed {
+	color: #3b82f6;
+}
+
+.booking-status.rejected {
+	color: #ef4444;
+}
+
+.booking-status.cancelled {
+	color: #ef4444;
+}
+
+.booking-status.cancel-requested {
+	color: #f59e0b;
+}
+
+.booking-status.pending {
+	color: #f59e0b;
+}

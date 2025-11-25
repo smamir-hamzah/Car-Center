@@ -186,14 +186,7 @@
 							<strong>ID:</strong> #{{ booking.id }}<br>
 							<strong>Type:</strong> {{ booking.get_request_type_display }}<br>
 							<strong>Status:</strong> 
-							<span style="color:
-								{% if booking.status == 'confirmed' %}#22c55e
-								{% elif booking.status == 'completed' %}#3b82f6
-								{% elif booking.status == 'rejected' %}#ef4444
-								{% elif booking.status == 'cancelled' %}#ef4444
-								{% elif booking.status == 'cancel_requested' %}#f59e0b
-								{% else %}#f59e0b
-								{% endif %};font-weight:600;">
+							<span class="booking-status {% if booking.status == 'confirmed' %}confirmed{% elif booking.status == 'completed' %}completed{% elif booking.status == 'rejected' %}rejected{% elif booking.status == 'cancelled' %}cancelled{% elif booking.status == 'cancel_requested' %}cancel-requested{% else %}pending{% endif %}">
 								{{ booking.get_status_display }}
 							</span>
 							{% if booking.status == 'completed' %}<br><strong style="color:#3b82f6;">✓ Delivery is Complete</strong>{% endif %}
