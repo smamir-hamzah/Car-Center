@@ -5,8 +5,9 @@
     <meta charset="utf-8">
     <title>{{ car.model }} — AutoWave</title>
     <link rel="stylesheet" href="{% static 'css/car_details.css' %}">
+    <script src="https://unpkg.com/htmx.org@1.10.0"></script>
 </head>
-<body>
+<body hx-get="." hx-trigger="every 12s" hx-swap="outerHTML">
     <!-- Topbar -->
     <header class="topbar">
         <div class="container topbar-inner">
@@ -133,6 +134,37 @@
             </div>
         </div>
     </div>
+
+    <!-- Buy Booking Modal -->
+<div id="buyBookingOverlay" class="modal-overlay hidden">
+    <div class="modal" id="buyBookingModal">
+        <button class="modal-close" id="buyBookingClose">&times;</button>
+        <div class="modal-content">
+            <form id="buyBookingForm" class="auth-form" method="post" action="{% url 'book' %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                <h3 style="color:#e6eef8">Purchase this Car</h3>
+
+                <input type="hidden" name="car_id" value="{{ car.id }}">
+                <input type="hidden" name="request_type" value="buy">
+
+                <label>Full Name</label>
+                <input type="text" name="full_name" required>
+
+                <label>Mobile Number</label>
+                <input type="text" name="mobile" required>
+
+                <label>Your Photo</label>
+                <input type="file" name="client_photo" accept="image/*">
+
+                <div style="margin-top:1rem;display:flex;gap:.5rem;justify-content:flex-end;">
+                    <button type="button" class="btn ghost" id="buyBookingCancel">Cancel</button>
+                    <button type="submit" class="btn primary">Submit Purchase Request</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 
     <!-- JS -->
     <script src="{% static 'js/home.js' %}"></script>

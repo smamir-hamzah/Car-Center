@@ -4,34 +4,46 @@
 <head>
     <meta charset="utf-8">
     <title>{{ car.model }} — AutoWave</title>
+
+    <!-- Important: add home.css so login/signup modal looks correct -->
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
     <link rel="stylesheet" href="{% static 'css/car_details.css' %}">
+
+    <script src="https://unpkg.com/htmx.org@1.10.0"></script>
 </head>
-<body>
+
+<body hx-get="." hx-trigger="every 12s" hx-swap="outerHTML">
+
     <!-- Topbar -->
     <header class="topbar">
         <div class="container topbar-inner">
             <div class="logo">AutoWave</div>
+
             <nav class="main-nav">
                 <a href="{% url 'home' %}#home">Home</a>
                 <a href="{% url 'home' %}#about">About</a>
             </nav>
+
             <div class="auth">
-                <button id="loginBtn" class="btn ghost">Login</button>
-                <button id="signupBtn" class="btn primary">Sign Up</button>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'logout' %}" class="btn ghost">Logout</a>
+                {% else %}
+                    <button id="loginBtn" class="btn ghost">Login</button>
+                    <button id="signupBtn" class="btn primary">Sign Up</button>
+                {% endif %}
             </div>
         </div>
     </header>
 
-    <!-- Main Content -->
+    <!-- Car Details -->
     <main class="details container">
         <div class="details-grid glass">
+
             <div class="image-col">
                 {% if car.photo %}
                     <img src="{{ car.photo.url }}" alt="{{ car.model }}">
                 {% else %}
-                    <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#111;color:#ddd">
-                        No image
-                    </div>
+                    <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#111;color:#ddd">No image</div>
                 {% endif %}
             </div>
 
@@ -40,12 +52,24 @@
                 <p>{{ car.description }}</p>
                 <p class="price">{{ car.price_display }}</p>
 
-                <p style="margin-top:1rem; color:var(--muted);">
-                    You must login or create an account to book this car.
-                </p>
-                <div class="detail-actions">
-                    <button id="loginBtn2" class="btn ghost">Login</button>
-                    <button id="signupBtn2" class="btn primary">Sign Up</button>
+                <div class="detail-actions" style="margin-top:1.5rem">
+
+                    {% if user.is_authenticated %}
+                        <!-- Logged-in users see Rent/Buy -->
+                        {% if car.car_type == 'rent' %}
+                            <button class="btn primary rent-btn" data-id="{{ car.id }}">Rent</button>
+                        {% else %}
+                            <button class="btn primary buy-btn" data-id="{{ car.id }}">Buy</button>
+                        {% endif %}
+                    {% else %}
+                        <!-- Logged-out users see Login/Signup -->
+                        <p style="margin-bottom:.7rem;color:var(--muted)">
+                            You must log in or create an account first.
+                        </p>
+                        <button id="loginBtn2" class="btn ghost">Login</button>
+                        <button id="signupBtn2" class="btn primary">Sign Up</button>
+                    {% endif %}
+
                 </div>
             </div>
         </div>
@@ -56,53 +80,189 @@
         <div class="container">© AutoWave — Smooth rides, clear deals.</div>
     </footer>
 
-    <!-- Login Modal -->
-    <div id="loginOverlay" class="modal-overlay hidden">
-        <div class="modal" id="loginModal">
-            <button class="modal-close" id="loginClose">&times;</button>
-            <div class="modal-content">
-                <form id="loginFormIndex" class="auth-form" method="post" action="{% url 'login' %}">
-                    {% csrf_token %}
-                    <h3 style="color:#e6eef8">Member Login</h3>
-                    <label>Email</label>
-                    <input type="email" name="email" placeholder="you@example.com" required>
-                    <label>Password</label>
-                    <input type="password" name="password" placeholder="Your password" required>
-                    <button class="btn primary" type="submit">Login</button>
-                </form>
+
+<!-- Login Modal -->
+<div id="loginOverlay" class="modal-overlay hidden">
+    <div class="modal">
+        <button class="modal-close" id="loginClose">&times;</button>
+        <div class="modal-content">
+            <form id="loginFormIndex" class="auth-form" method="post" action="{% url 'login' %}">
+                {% csrf_token %}
+                <h3 style="color:#e6eef8">Member Login</h3>
+
+                <label>Username or Email</label>
+                <input type="text" name="username" placeholder="Your username or email" required>
+
+                <label>Password</label>
+                <input type="password" name="password" placeholder="Your password" required>
+
+                <button class="btn primary" type="submit" style="margin-top:10px;">Login</button>
+            </form>
+
+            <!-- Social login section -->
+            <div class="text-center mb-3" style="margin-top: 15px;">
+                <span class="text-muted">Or sign in with</span>
+            </div>
+
+            <div class="social-card-container">
+                <a href="/accounts/google/login/" class="social-card google">
+                    <img src="{% static 'icons/google.svg' %}" alt="Google">
+                    <span>Google</span>
+                </a>
+                <a href="/accounts/github/login/" class="social-card github">
+                    <img src="{% static 'icons/github.svg' %}" alt="GitHub">
+                    <span>GitHub</span>
+                </a>
+                <a href="/accounts/facebook/login/" class="social-card facebook">
+                    <img src="{% static 'icons/facebook.svg' %}" alt="Facebook">
+                    <span>Facebook</span>
+                </a>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Signup Modal -->
-    <div id="signupOverlay" class="modal-overlay hidden">
-        <div class="modal" id="signupModal">
-            <button class="modal-close" id="signupClose">&times;</button>
+<!-- Sign Up Modal -->
+<div id="signupOverlay" class="modal-overlay hidden">
+    <div class="modal">
+        <button class="modal-close" id="signupClose">&times;</button>
+        <div class="modal-content">
+            <form id="signupFormIndex" class="auth-form" method="post" action="{% url 'signup' %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                <h3 style="color:#e6eef8">Create Account</h3>
+
+                <label>Full Name</label>
+                <input type="text" name="name" placeholder="Your name" required>
+
+                <label>Username</label>
+                <input type="text" name="username" placeholder="Choose a username" required>
+
+                <label>Email</label>
+                <input type="email" name="email" placeholder="you@example.com" required>
+
+                <label>Password</label>
+                <input type="password" name="password" placeholder="Choose a password" required>
+
+                <label>Confirm Password</label>
+                <input type="password" name="confirm_password" placeholder="Confirm your password" required>
+
+                <label>Profile Image</label>
+                <input type="file" name="image" accept="image/*">
+
+                <button class="btn primary" type="submit" style="margin-top:10px;">Sign Up</button>
+
+                <div class="text-center" style="margin-top:10px;">
+                    <small>Already have an account? <a href="{% url 'login' %}">Login</a></small>
+                </div>
+
+                <!-- Social Login Divider -->
+                <div class="text-center mb-3" style="margin-top: 20px;">
+                    <span class="text-muted">Or sign in with</span>
+                </div>
+
+                <!-- Social Login Buttons -->
+                <div class="social-card-container">
+                    <a href="/accounts/google/login/" class="social-card google">
+                        <img src="{% static 'icons/google.svg' %}" alt="Google">
+                        <span>Google</span>
+                    </a>
+
+                    <a href="/accounts/github/login/" class="social-card github">
+                        <img src="{% static 'icons/github.svg' %}" alt="GitHub">
+                        <span>GitHub</span>
+                    </a>
+
+                    <a href="/accounts/facebook/login/" class="social-card facebook">
+                        <img src="{% static 'icons/facebook.svg' %}" alt="Facebook">
+                        <span>Facebook</span>
+                    </a>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+    <!-- Rent Booking Modal -->
+    <div id="bookingOverlay" class="modal-overlay hidden">
+        <div class="modal">
+            <button class="modal-close" id="bookingClose">&times;</button>
             <div class="modal-content">
-                <form id="signupFormIndex" class="auth-form" method="post" action="{% url 'signup' %}">
+                <form id="bookingForm" method="post" action="{% url 'book' %}" enctype="multipart/form-data" class="auth-form">
                     {% csrf_token %}
-                    <h3 style="color:#e6eef8">Create Account</h3>
+
+                    <h3>Book this Car</h3>
+                    <input type="hidden" name="car_id" value="{{ car.id }}">
+                    <input type="hidden" name="request_type" value="rent">
+
                     <label>Full Name</label>
-                    <input type="text" name="name" placeholder="Your name" required>
-                    <label>Email</label>
-                    <input type="email" name="email" placeholder="you@example.com" required>
-                    <label>Password</label>
-                    <input type="password" name="password" placeholder="Choose a password" required>
-                    <button class="btn primary" type="submit">Sign Up</button>
+                    <input type="text" name="full_name" required>
+
+                    <label>Mobile</label>
+                    <input type="text" name="mobile" required>
+
+                    <label>Location</label>
+                    <input type="text" name="location">
+
+                    <label>NID / Passport</label>
+                    <input type="text" name="id_number">
+
+                    <label>Driving License</label>
+                    <input type="text" name="driving_license_number">
+
+                    <label>License Photo</label>
+                    <input type="file" name="driving_license_photo">
+
+                    <label>Your Photo</label>
+                    <input type="file" name="client_photo">
+
+                    <button class="btn primary">Submit Booking</button>
                 </form>
             </div>
         </div>
     </div>
 
-    <!-- JS -->
+
+    <!-- BUY Booking Modal -->
+    <div id="buyBookingOverlay" class="modal-overlay hidden">
+        <div class="modal">
+            <button class="modal-close" id="buyBookingClose">&times;</button>
+            <div class="modal-content">
+                <form id="buyBookingForm" method="post" action="{% url 'book' %}" enctype="multipart/form-data" class="auth-form">
+                    {% csrf_token %}
+                    
+                    <h3>Purchase this Car</h3>
+
+                    <input type="hidden" name="car_id" value="{{ car.id }}">
+                    <input type="hidden" name="request_type" value="buy">
+
+                    <label>Full Name</label>
+                    <input type="text" name="full_name" required>
+
+                    <label>Mobile Number</label>
+                    <input type="text" name="mobile" required>
+
+                    <label>Your Photo</label>
+                    <input type="file" name="client_photo" accept="image/*">
+
+                    <button class="btn primary">Submit Request</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <script src="{% static 'js/home.js' %}"></script>
+
     <script>
-        // Make secondary buttons open the same modal
+        // Secondary login/signup buttons
         const loginBtn2 = document.getElementById('loginBtn2');
         const signupBtn2 = document.getElementById('signupBtn2');
 
-        loginBtn2.addEventListener('click', () => document.getElementById('loginOverlay').classList.remove('hidden'));
-        signupBtn2.addEventListener('click', () => document.getElementById('signupOverlay').classList.remove('hidden'));
+        if (loginBtn2) loginBtn2.onclick = () => loginOverlay.classList.remove('hidden');
+        if (signupBtn2) signupBtn2.onclick = () => signupOverlay.classList.remove('hidden');
     </script>
+
 </body>
 </html>

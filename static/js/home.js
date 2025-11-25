@@ -44,7 +44,15 @@
 	if(bookingClose) bookingClose.addEventListener('click', ()=> closeOverlay(bookingOverlay));
 	if(bookingCancel) bookingCancel.addEventListener('click', (e)=>{ e.preventDefault(); closeOverlay(bookingOverlay); });
 
-	[loginOverlay, signupOverlay].forEach(ov=>{
+	// buy booking modal close/cancel handling (separate modal)
+	const buyBookingOverlay = document.getElementById('buyBookingOverlay');
+	const buyBookingClose = document.getElementById('buyBookingClose');
+	const buyBookingCancel = document.getElementById('buyBookingCancel');
+
+	if(buyBookingClose) buyBookingClose.addEventListener('click', ()=> closeOverlay(buyBookingOverlay));
+	if(buyBookingCancel) buyBookingCancel.addEventListener('click', (e)=>{ e.preventDefault(); closeOverlay(buyBookingOverlay); });
+
+	[loginOverlay, signupOverlay, bookingOverlay, buyBookingOverlay].forEach(ov=>{
 		if(!ov) return;
 		ov.addEventListener('click', (e)=>{
 			if(e.target === ov) closeOverlay(ov);
@@ -53,35 +61,11 @@
 
 	document.addEventListener('keydown', (e)=>{
 		if(e.key === 'Escape'){
-			[loginOverlay, signupOverlay].forEach(ov=>{ 
+			[loginOverlay, signupOverlay, bookingOverlay, buyBookingOverlay].forEach(ov=>{ 
 				if(ov && !ov.classList.contains('hidden')) closeOverlay(ov); 
 			});
 		}
 	});
-
-	// simple demo submit handlers (index forms) — if you have real auth, let Django handle them
-	const loginFormIndex = document.getElementById('loginFormIndex');
-	if(loginFormIndex) loginFormIndex.addEventListener('submit', (e)=>{
-		// Let form submit normally to server (comment out if you want demo dialog)
-		// e.preventDefault();
-		// alert('Logged in (demo)');
-		// closeOverlay(loginOverlay);
-	});
-
-	const signupFormIndex = document.getElementById('signupFormIndex');
-	if(signupFormIndex) signupFormIndex.addEventListener('submit', (e)=>{
-		// Let form submit normally to server
-	});
-
-	// Handle "Already have an account? Login" link in signup modal
-	const signupToLoginLink = document.querySelector('#signupModal a[href*="login"]');
-	if(signupToLoginLink){
-		signupToLoginLink.addEventListener('click', (e)=>{
-			e.preventDefault();
-			closeOverlay(signupOverlay);
-			openOverlay(loginOverlay);
-		});
-	}
 })();
 
 /* Card navigation for DETAILS only */
@@ -89,52 +73,64 @@
 	document.querySelectorAll('.details-btn').forEach(btn => {
 		btn.addEventListener('click', ()=>{
 			const id = btn.dataset.id;
-			// go to a dedicated details page or use query param — here we open a simple detail route
-			window.location.href = `/car/${encodeURIComponent(id)}/`; // optional detail page you can create
+			window.location.href = `/car/${encodeURIComponent(id)}/`;
 		});
 	});
 })();
 
 /* RENT and BUY now require LOGIN — open modal if clicked */
 (function(){
+
+	/* ---------------- RENT BUTTON ---------------- */
 	document.querySelectorAll('.rent-btn').forEach(btn=>{
 		btn.addEventListener('click', ()=>{
 			const bookingOverlay = document.getElementById('bookingOverlay');
 			const loginOverlay = document.getElementById('loginOverlay');
 			const carId = btn.dataset.id;
+
 			if(bookingOverlay){
-				// On user page: open booking modal and set car id
-				bookingOverlay.classList.remove('mode-buy');
+				// Open rent booking modal
 				const carInput = bookingOverlay.querySelector('input[name="car_id"]');
 				if(carInput) carInput.value = carId;
+
 				const typeInput = bookingOverlay.querySelector('input[name="request_type"]');
 				if(typeInput) typeInput.value = 'rent';
+
 				bookingOverlay.classList.remove('hidden');
-			} else if(loginOverlay){
-				// On home page (no booking modal available): show login
+			}
+			else if(loginOverlay){
 				loginOverlay.classList.remove('hidden');
 			}
 		});
 	});
 
+
+	/* ---------------- BUY BUTTON — FIXED VERSION ---------------- */
 	document.querySelectorAll('.buy-btn').forEach(btn=>{
 		btn.addEventListener('click', ()=>{
-			const bookingOverlay = document.getElementById('bookingOverlay');
+			const buyBookingOverlay = document.getElementById('buyBookingOverlay');
 			const loginOverlay = document.getElementById('loginOverlay');
 			const carId = btn.dataset.id;
-			if(bookingOverlay){
-				// Open booking modal in buy mode: hide rent-only fields
-				bookingOverlay.classList.add('mode-buy');
-				const carInput = bookingOverlay.querySelector('input[name="car_id"]');
+
+			if(buyBookingOverlay){
+
+				// Set car ID
+				const carInput = buyBookingOverlay.querySelector('input[name="car_id"]');
 				if(carInput) carInput.value = carId;
-				const typeInput = bookingOverlay.querySelector('input[name="request_type"]');
+
+				// ⭐ FIXED: Make sure BUY request_type is always set
+				const typeInput = buyBookingOverlay.querySelector('input[name="request_type"]');
 				if(typeInput) typeInput.value = 'buy';
-				bookingOverlay.classList.remove('hidden');
-			} else if(loginOverlay){
+
+				// Open modal
+				buyBookingOverlay.classList.remove('hidden');
+			}
+			else if(loginOverlay){
 				loginOverlay.classList.remove('hidden');
 			}
 		});
 	});
+
 })();
 
 /* Search behavior (demo) */
@@ -151,19 +147,16 @@
 	});
 })();
 
-/* Details page fetch — run only on a details page that includes detailImage element */
+/* Details page fetch */
 (function(){
 	const detailImage = document.getElementById('detailImage');
 	if(!detailImage) return;
 
-	const params = new URLSearchParams(window.location.search);
-	const id = params.get('id');
+	let id = new URLSearchParams(window.location.search).get('id');
 	if(!id){
-		// fallback: try to parse id from path /car/<id>/
 		const parts = window.location.pathname.split('/').filter(Boolean);
 		if(parts.length && parts[0] === 'car' && parts[1]) id = parts[1];
 	}
-
 	if(!id) return;
 
 	fetch(`/api/car/${encodeURIComponent(id)}/`)
@@ -175,6 +168,7 @@
 			const titleEl = document.getElementById('detailTitle');
 			const descEl = document.getElementById('detailDesc');
 			const priceEl = document.getElementById('detailPrice');
+
 			if(titleEl) titleEl.textContent = car.title;
 			if(descEl) descEl.textContent = car.description;
 			if(priceEl) priceEl.textContent = car.price;
@@ -216,3 +210,57 @@
 
 	revealEls.forEach(el => io.observe(el));
 })();
+
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    // -------------------------
+    // RENT MODAL
+    // -------------------------
+    document.querySelectorAll('.rent-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const overlay = document.getElementById('bookingOverlay');
+            const form = document.getElementById('bookingForm');
+            
+            form.querySelector('input[name="car_id"]').value = btn.dataset.id;
+            form.querySelector('input[name="request_type"]').value = "rent";
+
+            overlay.classList.remove('hidden');
+        });
+    });
+
+    document.getElementById('bookingClose').onclick = () => {
+        document.getElementById('bookingOverlay').classList.add('hidden');
+    };
+    document.getElementById('bookingCancel').onclick = () => {
+        document.getElementById('bookingOverlay').classList.add('hidden');
+    };
+
+
+    // -------------------------
+    // BUY MODAL (FIXED)
+    // -------------------------
+    document.querySelectorAll('.buy-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const overlay = document.getElementById('buyBookingOverlay');
+            const form = document.getElementById('buyBookingForm');
+
+            // FIX 1 → set correct car_id only for BUY form
+            form.querySelector('input[name="car_id"]').value = btn.dataset.id;
+
+            // FIX 2 → force request_type = buy
+            form.querySelector('input[name="request_type"]').value = "buy";
+
+            overlay.classList.remove('hidden');
+        });
+    });
+
+    document.getElementById('buyBookingClose').onclick = () => {
+        document.getElementById('buyBookingOverlay').classList.add('hidden');
+    };
+
+    document.getElementById('buyBookingCancel').onclick = () => {
+        document.getElementById('buyBookingOverlay').classList.add('hidden');
+    };
+
+});

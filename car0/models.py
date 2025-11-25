@@ -67,6 +67,8 @@ class Booking(models.Model):
     driving_license_number = models.CharField(max_length=100, blank=True)
     driving_license_photo = models.ImageField(upload_to='bookings/licenses/', blank=True, null=True)
     client_photo = models.ImageField(upload_to='bookings/clients/', blank=True, null=True)
+    start_date = models.DateField(null=True, blank=True)
+    end_date = models.DateField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     
     # Request type: rent or buy

@@ -6,8 +6,9 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Assistant Dashboard — AutoWave</title>
 <link rel="stylesheet" href="{% static 'css/home.css' %}">
+<script src="https://unpkg.com/htmx.org@1.10.0"></script>
 </head>
-<body>
+<body hx-get="." hx-trigger="every 12s" hx-swap="outerHTML">
 <header class="topbar">
   <div class="container topbar-inner" style="display:flex;align-items:center;justify-content:space-between;">
     <div class="logo" style="font-weight:700;color:#5ef0c6">AutoWave — Assistant</div>
@@ -18,8 +19,28 @@
   </div>
 </header>
 <main class="container" style="padding:1rem;margin-top:1rem;">
-  <h2>Assistant — Booking Requests</h2>
-  <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-top:1rem;">
+
+  <!-- Assistant Manager Profile Card -->
+  <div style="display:flex;align-items:center;justify-content:center;margin-bottom:2rem;">
+    <div class="profile-card">
+      <div style="display:flex;align-items:center;gap:1rem;">
+        {% if assistant_user.image %}
+          <img src="{{ assistant_user.image.url }}" alt="Profile" class="assistant-profile-photo-small">
+        {% else %}
+          <div class="assistant-profile-photo-small-placeholder">👤</div>
+        {% endif %}
+        <div>
+          <div style="font-size:1.2rem;font-weight:700;color:#fff;">{{ assistant_user.get_full_name|default:assistant_user.username }}</div>
+          <div style="font-size:0.9rem;color:#e6eef8;margin-top:0.2rem;">Assistant Manager</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Styles moved to css/home.css -->
+
+  <h2 style="margin-bottom:1.2rem;">Booking Requests</h2>
+  <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:2rem;">
     <a href="#rent" class="btn ghost">Rent Requests</a>
     <a href="#buy" class="btn ghost">Buy Requests</a>
     <a href="#cancel" class="btn ghost">Cancel Requests</a>
@@ -28,13 +49,37 @@
   <section id="rent" style="margin-top:1.5rem;">
     <h3>Rent Requests</h3>
     {% for b in rent_requests %}
-      <div class="card" style="padding:0.8rem;margin-top:0.6rem;border-left: 4px solid #f59e0b;">
-        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.8rem;">
-          <div style="flex:1;min-width:200px;">
-            <strong>#{{ b.id }}</strong> — {{ b.full_name }} ({{ b.mobile }})
-            <div style="font-size:0.9rem;color:var(--muted);">Car: {{ b.car }} — Status: <span style="color:#f59e0b;font-weight:600;">{{ b.get_status_display }}</span></div>
+      <div class="card glass" style="padding:1.2rem 1.5rem;margin-top:1.1rem;border-left: 4px solid #f59e0b;box-shadow:0 2px 12px rgba(59,130,246,0.08);">
+        <div style="display:flex;flex-wrap:wrap;gap:1.5rem;align-items:center;">
+          <div style="flex:1;min-width:220px;">
+            <div style="display:flex;align-items:center;gap:0.5rem;">
+              {% if b.client_photo %}
+                <img src="{{ b.client_photo.url }}" alt="Client Photo" class="booking-client-photo" style="width:24px !important;height:24px !important;border-radius:3px !important;object-fit:cover;">
+              {% else %}
+                <div style="width:24px;height:24px;border-radius:3px;background:#eee;display:flex;align-items:center;justify-content:center;font-size:0.8rem;color:#3b82f6;">👤</div>
+              {% endif %}
+              <div>
+                <strong style="font-size:1.1rem;color:#22c55e;">#{{ b.id }}</strong> — <span style="font-weight:600;">{{ b.full_name }}</span>
+                <div style="font-size:0.95rem;color:#3b82f6;">Mobile: {{ b.mobile }}</div>
+              </div>
+            </div>
+            <div style="margin-top:0.5rem;font-size:0.95rem;color:#555;">
+              <span>Car: <b>{{ b.car }}</b></span> | <span>Type: <b>{{ b.get_request_type_display }}</b></span> | <span>Status: <b style="color:#f59e0b;">{{ b.get_status_display }}</b></span>
+            </div>
+            <div style="margin-top:0.5rem;font-size:0.95rem;color:#555;">
+              <span>Location: <b>{{ b.location }}</b></span> | <span>ID: <b>{{ b.id_number }}</b></span>
+            </div>
+            <div style="margin-top:0.5rem;font-size:0.95rem;color:#555;">
+              <span>License: <b>{{ b.driving_license_number }}</b></span>
+              {% if b.driving_license_photo %}
+                | <a href="{{ b.driving_license_photo.url }}" target="_blank" style="color:#3b82f6;text-decoration:underline;">View License Photo</a>
+              {% endif %}
+            </div>
+            <div style="margin-top:0.5rem;font-size:0.95rem;color:#555;">
+              <span>Created: <b>{{ b.created_at|date:"M d, Y H:i" }}</b></span>
+            </div>
           </div>
-          <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+          <div style="display:flex;flex-direction:column;gap:0.7rem;min-width:120px;align-items:flex-end;">
             <form method="post" action="{% url 'assistant_process_booking' b.id %}">
               {% csrf_token %}
               <input type="hidden" name="action" value="confirm">

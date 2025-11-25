@@ -78,6 +78,8 @@ def booking_view(request):
         id_number = request.POST.get('id_number')
         driving_license_number = request.POST.get('driving_license_number')
         request_type = request.POST.get('request_type') or 'rent'
+        start_date = request.POST.get('start_date')
+        end_date = request.POST.get('end_date')
 
         booking = Booking.objects.create(
             car=car,
@@ -89,6 +91,8 @@ def booking_view(request):
             driving_license_number=driving_license_number or '',
             request_type=request_type,
             status='pending',
+            start_date=start_date,
+            end_date=end_date,
         )
 
         if request.FILES.get('driving_license_photo'):
@@ -307,6 +311,7 @@ def assistant_dashboard(request):
         'buy_requests': buy_requests,
         'cancel_requests': cancel_requests,
         'confirmed_bookings': confirmed_bookings,
+        'assistant_user': request.user,
     })
 
 
@@ -330,13 +335,26 @@ def assistant_process_booking(request, booking_id):
         # Send confirmation email to requester
         if booking.requester and booking.requester.email:
             try:
-                send_mail(
-                    f'Your booking #{booking.id} has been confirmed',
-                    f'Hello {booking.full_name},\n\nYour booking for {booking.car.model if booking.car else "the requested car"} has been confirmed.\n\nBooking Details:\n- Type: {booking.get_request_type_display()}\n- ID: #{booking.id}\n- Mobile: {booking.mobile}\n\nPlease visit our office to complete the process.\n\nBest regards,\nAutoWave Team',
-                    settings.DEFAULT_FROM_EMAIL or 'noreply@autowave.com',
-                    [booking.requester.email],
-                    fail_silently=True
-                )
+                    send_mail(
+                        f'Your booking #{booking.id} has been confirmed',
+                        f'Hello {booking.full_name},\n\n'
+                        f'Your booking for {booking.car.model if booking.car else "the requested car"} has been confirmed.\n\n'
+                        f'Booking Details:\n'
+                        f'- Type: {booking.get_request_type_display()}\n'
+                        f'- ID: #{booking.id}\n'
+                        f'- Mobile: {booking.mobile}\n\n'
+                        f'Please visit our office to complete the process. Kindly bring the following documents:\n'
+                        f'- Passport\n'
+                        f'- Driving licence\n'
+                        f'- Electricity bill\n'
+                        f'- Two passport-size photos\n'
+                        f'- Advance payment\n\n'
+                        f'Best regards,\n'
+                        f'AutoWave Team',
+                        settings.DEFAULT_FROM_EMAIL or 'noreply@autowave.com',
+                        [booking.requester.email],
+                        fail_silently=True
+                    )
             except Exception:
                 pass
                 
