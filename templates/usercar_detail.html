@@ -110,6 +110,7 @@
                     {% csrf_token %}
                     <h3 style="color:#e6eef8">Book this Car</h3>
                     <input type="hidden" name="car_id" value="{{ car.id }}">
+                    <input type="hidden" name="request_type" value="rent">
                     <label>Full Name</label>
                     <input type="text" name="full_name" required>
                     <label>Mobile Number</label>

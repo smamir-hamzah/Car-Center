@@ -235,15 +235,8 @@ html, body {
 }
 
 
-/* ============================
-   PRO SECTION
-============================ */
-/* .pro-section {
-	padding: 4rem 0;
-	text-align: center;
-}
 
-/* PRO Plans */
+
 .plan {
 	padding: 1rem;
 	border-radius: 12px;
@@ -265,7 +258,51 @@ html, body {
 
 .plan-features li {
 	margin: .4rem 0;
-} */
+}
+
+/* ============================
+   SOCIAL LOGIN
+   Keeps icons small and aligned in the login modal
+============================ */
+.social-card-container {
+	display: flex;
+	gap: 0.5rem;
+	margin-top: 1rem;
+}
+
+.social-card {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.45rem 0.6rem;
+	border-radius: 10px;
+	background: rgba(255,255,255,0.03);
+	border: 1px solid rgba(255,255,255,0.06);
+	text-decoration: none;
+	color: inherit;
+}
+
+/* Icon sizing: small and consistent */
+.social-card img {
+	width: 18px !important;
+	height: 18px !important;
+	object-fit: contain;
+	display: block;
+}
+
+.social-card span {
+	font-weight: 700;
+	font-size: 0.95rem;
+}
+
+/* Optional brand accents */
+.social-card.google { border-left: 3px solid #ea4335; }
+.social-card.github { border-left: 3px solid #24292f; }
+.social-card.facebook { border-left: 3px solid #1877f2; }
+
+@media (max-width: 520px) {
+	.social-card-container { flex-direction: column; }
+}
 
 /* ============================
    CAR CARDS

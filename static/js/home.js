@@ -72,6 +72,16 @@
 	if(signupFormIndex) signupFormIndex.addEventListener('submit', (e)=>{
 		// Let form submit normally to server
 	});
+
+	// Handle "Already have an account? Login" link in signup modal
+	const signupToLoginLink = document.querySelector('#signupModal a[href*="login"]');
+	if(signupToLoginLink){
+		signupToLoginLink.addEventListener('click', (e)=>{
+			e.preventDefault();
+			closeOverlay(signupOverlay);
+			openOverlay(loginOverlay);
+		});
+	}
 })();
 
 /* Card navigation for DETAILS only */
@@ -97,6 +107,8 @@
 				bookingOverlay.classList.remove('mode-buy');
 				const carInput = bookingOverlay.querySelector('input[name="car_id"]');
 				if(carInput) carInput.value = carId;
+				const typeInput = bookingOverlay.querySelector('input[name="request_type"]');
+				if(typeInput) typeInput.value = 'rent';
 				bookingOverlay.classList.remove('hidden');
 			} else if(loginOverlay){
 				// On home page (no booking modal available): show login
@@ -115,6 +127,8 @@
 				bookingOverlay.classList.add('mode-buy');
 				const carInput = bookingOverlay.querySelector('input[name="car_id"]');
 				if(carInput) carInput.value = carId;
+				const typeInput = bookingOverlay.querySelector('input[name="request_type"]');
+				if(typeInput) typeInput.value = 'buy';
 				bookingOverlay.classList.remove('hidden');
 			} else if(loginOverlay){
 				loginOverlay.classList.remove('hidden');

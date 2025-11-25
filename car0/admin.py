@@ -1,7 +1,13 @@
 from django.contrib import admin
+from .models import Car
+from django.contrib.auth.admin import UserAdmin
+from .models import CustomUser
 
 # Register your models here.
-from .models import Car
+
+
+admin.site.register(CustomUser)
+
 
 @admin.register(Car)
 class CarAdmin(admin.ModelAdmin):

@@ -1,0 +1,20 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Logged out — AutoWave</title>
+  <link rel="stylesheet" href="{% static 'css/home.css' %}">
+</head>
+<body>
+  <main style="display:flex;align-items:center;justify-content:center;min-height:80vh;">
+    <div class="modal" style="opacity:1;transform:none;box-shadow:none;background:rgba(6, 10, 18, 0.5);border:1px solid rgba(255,255,255,0.08);max-width:480px;">
+      <div class="modal-content">
+        <h3 style="color:#e6eef8;margin-top:0;">You are logged out</h3>
+        <p style="color:rgba(230,238,248,0.8);">You have been signed out. <a href="{% url 'home' %}">Return to home</a></p>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

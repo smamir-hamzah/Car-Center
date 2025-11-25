@@ -149,43 +149,94 @@
 		<div class="container">© AutoWave — Smooth rides, clear deals.</div>
 	</footer>
 
-	<!-- Login Modal (separate overlay) -->
-	<div id="loginOverlay" class="modal-overlay hidden">
-		<div class="modal" id="loginModal">
-			<button class="modal-close" id="loginClose">&times;</button>
-			<div class="modal-content">
-				<form id="loginFormIndex" class="auth-form" method="post" action="{% url 'login' %}">
-					{% csrf_token %}
-					<h3 style="color:#e6eef8">Member Login</h3>
-					<label>Email</label>
-					<input type="email" id="loginEmail" name="email" placeholder="you@example.com" required>
-					<label>Password</label>
-					<input type="password" id="loginPass" name="password" placeholder="Your password" required>
-					<button class="btn primary" type="submit">Login</button>
-				</form>
-			</div>
-		</div>
-	</div>
+<!-- Login Modal (separate overlay) -->
+<div id="loginOverlay" class="modal-overlay hidden">
+    <div class="modal" id="loginModal">
+        <button class="modal-close" id="loginClose">&times;</button>
+        <div class="modal-content">
+
+            <form id="loginFormIndex" class="auth-form" method="post" action="{% url 'login' %}">
+                {% csrf_token %}
+                <h3 style="color:#e6eef8">Member Login</h3>
+
+                <label>Username</label>
+                <input type="username" id="loginEmail" name="username" required>
+
+                <label>Password</label>
+                <input type="password" id="loginPass" name="password" placeholder="Your password" required>
+
+                <button class="btn primary" type="submit">Login</button>
+            </form>
+
+            <!-- Social login section -->
+            <div class="text-center mb-3" style="margin-top: 15px;">
+                <span class="text-muted">Or sign in with</span>
+            </div>
+
+            <div class="social-card-container">
+                <a href="/accounts/google/login/" class="social-card google">
+                    <img src="{% static 'icons/google.svg' %}" alt="Google">
+                    <span></span>
+                </a>
+                <a href="/accounts/github/login/" class="social-card github">
+                    <img src="{% static 'icons/github.svg' %}" alt="GitHub">
+                    <span></span>
+                </a>
+                <a href="/accounts/facebook/login/" class="social-card facebook">
+                    <img src="{% static 'icons/facebook.svg' %}" alt="Facebook">
+                    <span></span>
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>
+
 
 	<!-- Sign Up Modal (separate overlay) -->
-	<div id="signupOverlay" class="modal-overlay hidden">
-		<div class="modal" id="signupModal">
-			<button class="modal-close" id="signupClose">&times;</button>
-			<div class="modal-content">
-				<form id="signupFormIndex" class="auth-form" method="post" action="{% url 'signup' %}">
-					{% csrf_token %}
-					<h3 style="color:#e6eef8">Create Account</h3>
-					<label>Full Name</label>
-					<input type="text" id="signupName" name="name" placeholder="Your name" required>
-					<label>Email</label>
-					<input type="email" id="signupEmail" name="email" placeholder="you@example.com" required>
-					<label>Password</label>
-					<input type="password" id="signupPass" name="password" placeholder="Choose a password" required>
-					<button class="btn primary" type="submit">Sign Up</button>
-				</form>
-			</div>
-		</div>
-	</div>
+<div id="signupOverlay" class="modal-overlay hidden">
+    <div class="modal" id="signupModal">
+        <button class="modal-close" id="signupClose">&times;</button>
+        <div class="modal-content">
+            <form id="signupFormIndex" class="auth-form" method="post" action="{% url 'signup' %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                <h3 style="color:#e6eef8">Create Account</h3>
+
+                <!-- Full Name -->
+                <label>Full Name</label>
+                <input type="text" id="signupName" name="name" placeholder="Your name" required>
+
+                <!-- Username -->
+                <label>Username</label>
+                <input type="text" id="signupUsername" name="username" placeholder="Choose a username" required>
+
+                <!-- Email -->
+                <label>Email</label>
+                <input type="email" id="signupEmail" name="email" placeholder="you@example.com" required>
+
+                <!-- Password -->
+                <label>Password</label>
+                <input type="password" id="signupPass" name="password" placeholder="Choose a password" required>
+
+                <!-- Confirm Password -->
+                <label>Confirm Password</label>
+                <input type="password" id="signupConfirmPass" name="confirm_password" placeholder="Confirm your password" required>
+
+                <!-- Profile Image -->
+                <label>Profile Image</label>
+                <input type="file" id="signupImage" name="image" accept="image/*">
+
+                <button class="btn primary" type="submit">Sign Up</button>
+
+                <!-- Already have an account -->
+					<div class="text-center">
+						<small>Already have an account? <a href="{% url 'login' %}">Login</a></small>
+					</div>
+            </form>
+        </div>
+    </div>
+</div>
+
 
 	<script src="{% static 'js/home.js' %}"></script>
 </body>
