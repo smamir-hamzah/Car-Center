@@ -1,6 +1,9 @@
 {% load static %}
+{% load socialaccount %}
+
 <!doctype html>
 <html lang="en">
+
 <head>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -11,6 +14,7 @@
     <script src="https://unpkg.com/htmx.org@1.10.0"></script>
 </head>
 <body hx-get="." hx-trigger="every 12s" hx-swap="outerHTML">
+   
 	<header class="topbar">
 		<div class="container topbar-inner" style="display:flex;align-items:center;justify-content:space-between;">
 			<div class="logo" style="font-weight:700;font-size:1.25rem;color:#5ef0c6">AutoWave</div>
@@ -201,19 +205,28 @@
                 <span class="text-muted">Or sign in with</span>
             </div>
 
-            <div class="social-card-container">
-                <a href="/accounts/google/login/" class="social-card google">
-                    <img src="{% static 'icons/google.svg' %}" alt="Google">
-                    <span></span>
-                </a>
-                <a href="/accounts/github/login/" class="social-card github">
-                    <img src="{% static 'icons/github.svg' %}" alt="GitHub">
-                    <span></span>
-                </a>
-                <a href="/accounts/facebook/login/" class="social-card facebook">
-                    <img src="{% static 'icons/facebook.svg' %}" alt="Facebook">
-                    <span></span>
-                </a>
+                <div class="social-card-container">
+                <form method="post" action="/accounts/google/login/" style="display:inline;margin:0;">
+                    {% csrf_token %}
+                    <button type="submit" class="social-card google" aria-label="Sign in with Google" style="border:none;background:transparent;padding:0;">
+                        <img src="{% static 'icons/google.svg' %}" alt="Google">
+                        <span></span>
+                    </button>
+                </form>
+                <form method="post" action="/accounts/github/login/" style="display:inline;margin:0;">
+                    {% csrf_token %}
+                    <button type="submit" class="social-card github" aria-label="Sign in with GitHub" style="border:none;background:transparent;padding:0;">
+                        <img src="{% static 'icons/github.svg' %}" alt="GitHub">
+                        <span></span>
+                    </button>
+                </form>
+                <form method="post" action="/accounts/facebook/login/" style="display:inline;margin:0;">
+                    {% csrf_token %}
+                    <button type="submit" class="social-card facebook" aria-label="Sign in with Facebook" style="border:none;background:transparent;padding:0;">
+                        <img src="{% static 'icons/facebook.svg' %}" alt="Facebook">
+                        <span></span>
+                    </button>
+                </form>
             </div>
 
         </div>
@@ -264,6 +277,8 @@
                     </small>
                 </div>
 
+                </form>
+
                 <!-- Social Login Divider -->
                 <div class="text-center mb-3" style="margin-top: 20px;">
                     <span class="text-muted">Or sign in with</span>
@@ -272,24 +287,31 @@
                 <!-- Social Login Buttons -->
                 <div class="social-card-container">
 
-                    <a href="/accounts/google/login/" class="social-card google">
-                        <img src="{% static 'icons/google.svg' %}" alt="Google">
-                        <span>Google</span>
-                    </a>
+                    <form method="post" action="/accounts/google/login/" style="display:inline;margin:0;">
+                        {% csrf_token %}
+                        <button type="submit" class="social-card google" aria-label="Sign up with Google" style="border:none;background:transparent;padding:0;">
+                            <img src="{% static 'icons/google.svg' %}" alt="Google">
+                            <span>Google</span>
+                        </button>
+                    </form>
 
-                    <a href="/accounts/github/login/" class="social-card github">
-                        <img src="{% static 'icons/github.svg' %}" alt="GitHub">
-                        <span>GitHub</span>
-                    </a>
+                    <form method="post" action="/accounts/github/login/" style="display:inline;margin:0;">
+                        {% csrf_token %}
+                        <button type="submit" class="social-card github" aria-label="Sign up with GitHub" style="border:none;background:transparent;padding:0;">
+                            <img src="{% static 'icons/github.svg' %}" alt="GitHub">
+                            <span>GitHub</span>
+                        </button>
+                    </form>
 
-                    <a href="/accounts/facebook/login/" class="social-card facebook">
-                        <img src="{% static 'icons/facebook.svg' %}" alt="Facebook">
-                        <span>Facebook</span>
-                    </a>
+                    <form method="post" action="/accounts/facebook/login/" style="display:inline;margin:0;">
+                        {% csrf_token %}
+                        <button type="submit" class="social-card facebook" aria-label="Sign up with Facebook" style="border:none;background:transparent;padding:0;">
+                            <img src="{% static 'icons/facebook.svg' %}" alt="Facebook">
+                            <span>Facebook</span>
+                        </button>
+                    </form>
 
                 </div>
-
-            </form>
         </div>
     </div>
 </div>

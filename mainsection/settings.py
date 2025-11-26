@@ -18,6 +18,9 @@ ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1,0.0.0.0").split(
 
 # Application definition
 
+SITE_ID=2
+
+
 INSTALLED_APPS = [
     'unfold',
     'django.contrib.admin',
@@ -28,7 +31,55 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'car0',
     'car1',
+    'django.contrib.sites',
+
+    # allauth
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.github',
+    'allauth.socialaccount.providers.facebook',
+
+
 ]
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': ['profile', 'email'],
+        'AUTH_PARAMS': {'access_type': 'online'},
+        # NOTE: We intentionally do NOT provide an inline 'APP' here because
+        # Google credentials are configured via the database (SocialApp).
+        # Providing both an 'APP' here and a DB SocialApp causes allauth to
+        # see two apps for the same provider and raise MultipleObjectsReturned.
+    },
+    'github': {
+        'SCOPE': ['user:email'],
+    },
+    'facebook': {
+        'METHOD': 'oauth2',
+        'SCOPE': ['email'],
+        'AUTH_PARAMS': {'auth_type': 'reauthenticate'},
+        'INIT_PARAMS': {'cookie': True},
+        'FIELDS': [
+            'id',
+            'email',
+            'name',
+            'first_name',
+            'last_name',
+            'verified',
+            'locale',
+            'timezone',
+            'link',
+            'gender',
+            'updated_time',
+        ],
+        'EXCHANGE_TOKEN': True,
+        'VERIFIED_EMAIL': False,
+        'VERSION': 'v7.0',
+    },
+}
+
 
 
 AUTH_USER_MODEL = "car0.CustomUser"
@@ -38,6 +89,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -129,3 +181,22 @@ EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'True') == 'True'
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', 'hamza449081@gmail.com')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', 'lfuzhrplfrqlcfce')
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+
+
+#===========================For Eamil
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+)
+
+ACCOUNT_ADAPTER = 'mainsection.adapters.CustomAccountAdapter'
+SOCIALACCOUNT_ADAPTER = 'mainsection.adapters.CustomSocialAccountAdapter'
+
+LOGIN_REDIRECT_URL = '/userhtml/'
+LOGOUT_REDIRECT_URL = '/'
+
+# Ensure social account logins redirect to the user dashboard
+SOCIALACCOUNT_LOGIN_REDIRECT_URL = '/userhtml/'
+ACCOUNT_SIGNUP_REDIRECT_URL = '/userhtml/'
