@@ -1,0 +1,269 @@
+/* ============================
+   RESPONSIVE - Car Details Page
+============================ */
+
+/* Extra Small Devices (320px - 480px) */
+@media (max-width: 480px) {
+	body {
+		padding-top: 50px;
+	}
+	
+	.topbar {
+		height: 50px;
+	}
+	
+	.topbar-inner {
+		padding: 0.5rem 0;
+		gap: 0.5rem;
+	}
+	
+	.logo {
+		font-size: 1rem;
+	}
+	
+	.main-nav {
+		display: none !important;
+	}
+	
+	.auth {
+		gap: 0.25rem;
+	}
+	
+	.btn {
+		padding: 0.4rem 0.6rem;
+		font-size: 0.85rem;
+		min-height: 40px;
+	}
+	
+	.container {
+		padding: 0.5rem;
+	}
+	
+	.details-grid {
+		grid-template-columns: 1fr;
+		gap: 1rem;
+	}
+	
+	.image-col {
+		order: 2;
+	}
+	
+	.info-col {
+		order: 1;
+	}
+	
+	.details-grid img {
+		max-height: 200px;
+		object-fit: cover;
+	}
+	
+	.details-grid h1 {
+		font-size: 1.5rem;
+		margin: 0.5rem 0;
+	}
+	
+	.details-grid p {
+		font-size: 0.95rem;
+		line-height: 1.4;
+	}
+	
+	.price {
+		font-size: 1.3rem !important;
+		margin: 1rem 0;
+	}
+	
+	.grid {
+		grid-template-columns: 1fr;
+		gap: 0.75rem;
+	}
+	
+	.card {
+		border-radius: 10px;
+	}
+	
+	.card img {
+		height: 100px;
+	}
+	
+	.modal {
+		width: 90%;
+		max-width: 100%;
+		padding: 1rem;
+	}
+	
+	.modal-close {
+		font-size: 1.5rem;
+		right: 0.4rem;
+		top: 0.3rem;
+	}
+	
+	.auth-form label {
+		font-size: 0.9rem;
+	}
+	
+	.auth-form input,
+	.auth-form select,
+	.auth-form textarea {
+		font-size: 16px;
+		padding: 0.6rem;
+	}
+}
+
+/* Small Devices (481px - 768px) */
+@media (max-width: 768px) {
+	body {
+		padding-top: 60px;
+	}
+	
+	.topbar {
+		height: 60px;
+	}
+	
+	.main-nav {
+		display: flex;
+		gap: 0.6rem;
+		font-size: 0.85rem;
+		margin-left: 0.5rem;
+	}
+	
+	.details-grid {
+		grid-template-columns: 1fr;
+		gap: 1.5rem;
+	}
+	
+	.details-grid img {
+		max-height: 250px;
+	}
+	
+	.details-grid h1 {
+		font-size: 1.75rem;
+	}
+	
+	.container {
+		padding: 1rem;
+	}
+	
+	.grid {
+		grid-template-columns: repeat(2, 1fr);
+		gap: 1rem;
+	}
+	
+	.card img {
+		height: 120px;
+	}
+	
+	.modal {
+		width: 95%;
+		max-width: 450px;
+		padding: 1.5rem;
+	}
+	
+	.modal-close {
+		font-size: 1.6rem;
+	}
+}
+
+/* Medium Devices (769px - 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+	.details-grid {
+		grid-template-columns: 1fr 1fr;
+		gap: 1.5rem;
+	}
+	
+	.grid {
+		grid-template-columns: repeat(3, 1fr);
+		gap: 1.25rem;
+	}
+	
+	.modal {
+		max-width: 480px;
+	}
+	
+	.container {
+		max-width: 900px;
+	}
+}
+
+/* Large Devices (1025px+) */
+@media (min-width: 1025px) {
+	.details-grid {
+		grid-template-columns: 1fr 1fr;
+		gap: 2rem;
+	}
+	
+	.grid {
+		grid-template-columns: repeat(4, 1fr);
+		gap: 1.5rem;
+	}
+	
+	.container {
+		max-width: 1150px;
+	}
+	
+	.modal {
+		max-width: 520px;
+	}
+}
+
+/* Landscape Orientation */
+@media (orientation: landscape) and (max-height: 500px) {
+	.hero {
+		padding: 1rem 0;
+	}
+	
+	.hero-inner {
+		padding: 1rem;
+	}
+	
+	.details-grid {
+		gap: 1rem;
+	}
+}
+
+/* Touch Devices */
+@media (hover: none) and (pointer: coarse) {
+	.btn,
+	.social-card {
+		min-height: 44px;
+	}
+	
+	.card:hover {
+		transform: none;
+		box-shadow: 0 8px 16px rgba(2,6,23,0.3);
+	}
+	
+	/* Increase button spacing */
+	.detail-actions {
+		gap: 0.75rem;
+	}
+	
+	.detail-actions .btn {
+		width: 100%;
+	}
+}
+
+/* Print Media */
+@media print {
+	.topbar,
+	.footer,
+	.modal-overlay,
+	.detail-actions,
+	.btn {
+		display: none !important;
+	}
+	
+	body {
+		background: white;
+		color: black;
+	}
+	
+	.details-grid {
+		gap: 0;
+	}
+	
+	.image-col img {
+		max-width: 100%;
+		height: auto;
+		page-break-inside: avoid;
+	}
+}

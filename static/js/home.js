@@ -3,6 +3,57 @@
 /* Welcome Back Notification */
 (function(){
 	const welcomeNotif = document.getElementById('welcomeNotification');
+
+/* -------------------------
+   Small, safe hamburger toggle
+   - Only runs when `#hamburgerBtn` and `#mainNav` exist
+   - Respects screen size and resets on resize
+*/
+(function(){
+	const burger = document.getElementById('hamburgerBtn');
+	const nav = document.getElementById('mainNav');
+	if(!burger || !nav) return;
+
+	const mq = window.matchMedia('(max-width: 768px)');
+
+	function isMobile(){ return mq.matches; }
+
+	function openNav(){
+		nav.classList.add('active');
+		burger.setAttribute('aria-expanded','true');
+	}
+
+	function closeNav(){
+		nav.classList.remove('active');
+		burger.setAttribute('aria-expanded','false');
+	}
+
+	// Initialize: ensure predictable state
+	nav.classList.remove('active');
+	burger.setAttribute('aria-expanded','false');
+
+	burger.addEventListener('click', function(e){
+		e.preventDefault();
+		console.log('[hamburger] click — current classes:', nav.className);
+		if(nav.classList.contains('active')){
+			closeNav();
+			console.log('[hamburger] closed');
+		}
+		else {
+			openNav();
+			console.log('[hamburger] opened');
+		}
+	});
+
+	// Reset when resizing (keeps behaviour predictable)
+	window.addEventListener('resize', function(){
+		if(!isMobile()){
+			nav.classList.remove('active');
+			burger.setAttribute('aria-expanded','false');
+		}
+	});
+})();
+
 	if(welcomeNotif){
 		// Auto-remove after animation completes (4s)
 		setTimeout(()=>{

@@ -5,6 +5,8 @@
     <meta charset="utf-8">
     <title>{{ car.model }} — AutoWave</title>
     <link rel="stylesheet" href="{% static 'css/car_details.css' %}">
+    <link rel="stylesheet" href="{% static 'css/responsive.css' %}">
+    <link rel="stylesheet" href="{% static 'css/responsive-details.css' %}">
     <script src="https://unpkg.com/htmx.org@1.10.0"></script>
 </head>
 <body hx-get="." hx-trigger="every 12s" hx-swap="outerHTML">

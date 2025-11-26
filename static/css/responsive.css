@@ -1,0 +1,442 @@
+/* ============================
+   RESPONSIVE DESIGN
+   Mobile First Approach
+============================ */
+
+/* Extra Small Devices (320px - 480px) */
+@media (max-width: 480px) {
+	/* Global */
+	html, body {
+		font-size: 14px;
+	}
+	
+	.container {
+		padding: 0.75rem;
+	}
+	
+	/* Topbar */
+	.topbar-inner {
+		gap: 0.5rem;
+		position: relative;
+	}
+    
+	/* Hamburger + collapsed nav on small screens */
+	.hamburger {
+		display: flex;
+		flex-direction: column;
+		gap: 5px;
+		width: 36px;
+		height: 36px;
+		align-items: center;
+		justify-content: center;
+		background: transparent;
+		border: none;
+		cursor: pointer;
+		z-index: 1200;
+	}
+
+	.hamburger span {
+		display: block;
+		width: 22px;
+		height: 2.5px;
+		background: #5ef0c6;
+		border-radius: 2px;
+		transition: all 0.25s ease;
+	}
+
+	/* Nav hidden by default on mobile, toggled with .active */
+	.main-nav {
+		display: none;
+		flex-direction: column;
+		gap: 0.5rem;
+		padding: 0.5rem 0;
+		background: rgba(6, 10, 18, 0.95);
+		backdrop-filter: blur(12px);
+		position: absolute;
+		top: 100%;
+		left: 0;
+		right: 0;
+		width: auto;
+		z-index: 1100;
+	}
+
+	.main-nav a {
+		padding: 0.75rem 1rem;
+		display: block;
+		border-bottom: 1px solid rgba(255,255,255,0.05);
+	}
+
+	.main-nav a:last-child {
+		border-bottom: none;
+	}
+
+	.main-nav.active {
+		display: flex !important;
+	}
+	
+	.auth {
+		gap: 0.25rem;
+	}
+	
+	.user-profile {
+		display: none;
+	}
+	
+	.btn {
+		padding: 0.45rem 0.75rem;
+		font-size: 0.9rem;
+	}
+	
+	/* Hero Banner */
+	.hero-banner {
+		height: 50vh;
+	}
+	
+	.hero-content {
+		margin-left: 0.5rem;
+		margin-right: 0.5rem;
+		padding: 1rem;
+		max-width: 100%;
+	}
+	
+	.hero-content h1 {
+		font-size: 1.5rem;
+	}
+	
+	.hero-content p {
+		font-size: 0.95rem;
+	}
+	
+	/* Modal */
+	.modal {
+		width: 90%;
+		max-width: 100%;
+		padding: 1rem;
+	}
+	
+	/* Welcome Notification */
+	.welcome-notification {
+		top: 70px;
+		right: 10px;
+		left: 10px;
+		max-width: none;
+		padding: 1rem;
+		font-size: 0.95rem;
+	}
+	
+	/* Grid */
+	.grid {
+		grid-template-columns: 1fr;
+		gap: 0.75rem;
+	}
+	
+	/* Social Cards */
+	.social-card-container {
+		flex-direction: column;
+		gap: 0.5rem;
+	}
+	
+	.social-card {
+		width: 100%;
+		justify-content: center;
+		padding: 0.5rem;
+	}
+	
+	/* Form */
+	.auth-form input {
+		padding: 0.7rem 0.5rem;
+		font-size: 16px; /* Prevents zoom on iOS */
+	}
+	
+	/* Card */
+	.card-media {
+		height: 120px;
+	}
+	
+	/* Text */
+	h1 { font-size: 1.75rem !important; }
+	h2 { font-size: 1.3rem !important; }
+	h3 { font-size: 1.1rem !important; }
+}
+
+/* Small Devices (481px - 768px) */
+@media (max-width: 768px) {
+	/* Global */
+	.container {
+		padding: 1rem;
+	}
+	
+	/* Topbar: enable hamburger and collapse nav by default */
+	.hamburger {
+		display: flex;
+		flex-direction: column;
+		gap: 5px;
+		width: 36px;
+		height: 36px;
+		align-items: center;
+		justify-content: center;
+		background: transparent;
+		border: none;
+		cursor: pointer;
+		margin-left: auto;
+	}
+
+    .hamburger span {
+		display: block;
+		width: 22px;
+		height: 2.5px;
+		background: #5ef0c6;
+		border-radius: 2px;
+		transition: all 0.25s ease;
+	}
+
+	/* ensure hamburger is on top and clickable */
+	.hamburger { z-index: 1200; }
+
+	.main-nav {
+		display: none;
+		flex-direction: column;
+		gap: 0.5rem;
+		width: 100%;
+		padding: 0.5rem 0;
+		background: transparent;
+		position: absolute;
+		top: 100%;
+		left: 0;
+		right: 0;
+		background: rgba(6, 10, 18, 0.95);
+		backdrop-filter: blur(12px);
+		width: auto;
+		z-index: 1100;
+	}
+
+	.main-nav a {
+		padding: 0.75rem 1rem;
+		display: block;
+		border-bottom: 1px solid rgba(255,255,255,0.05);
+	}
+
+	.main-nav a:last-child {
+		border-bottom: none;
+	}
+
+	.main-nav.active {
+		display: flex !important;
+	}
+	
+	.topbar-inner {
+		position: relative;
+	}
+	
+	/* Hero Banner */
+	.hero-banner {
+		height: 60vh;
+	}
+	
+	.hero-content {
+		margin-left: 1rem;
+		margin-right: 1rem;
+		max-width: 90%;
+	}
+	
+	.hero-content h1 {
+		font-size: 2rem;
+	}
+	
+	/* Grid */
+	.grid {
+		grid-template-columns: repeat(2, 1fr);
+		gap: 1rem;
+	}
+	
+	/* Details Grid */
+	.details-grid {
+		grid-template-columns: 1fr;
+		gap: 2rem;
+	}
+	
+	.image-col {
+		order: 2;
+	}
+	
+	.info-col {
+		order: 1;
+	}
+	
+	/* Modal */
+	.modal {
+		width: 95%;
+		max-width: 450px;
+		padding: 1.5rem;
+	}
+	
+	/* Process Steps */
+	.process-steps {
+		grid-template-columns: repeat(2, 1fr) !important;
+	}
+	
+	/* Reveal animations - reduce on mobile */
+	.reveal {
+		--reveal-x: 0;
+		opacity: 1;
+		transform: none;
+	}
+	
+	/* Card media */
+	.card-media {
+		height: 140px;
+	}
+	
+	/* Stagger animations only on larger screens */
+	.car-card {
+		animation: scaleIn 0.3s ease-out forwards;
+	}
+}
+
+/* Medium Devices (769px - 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+	/* Grid */
+	.grid {
+		grid-template-columns: repeat(3, 1fr);
+		gap: 1.25rem;
+	}
+	
+	/* Details Grid */
+	.details-grid {
+		grid-template-columns: 1fr 1fr;
+		gap: 1.5rem;
+	}
+	
+	/* Container */
+	.container {
+		max-width: 900px;
+	}
+	
+	/* Modal */
+	.modal {
+		max-width: 480px;
+	}
+	
+	/* Process Steps */
+	.process-steps {
+		grid-template-columns: repeat(3, 1fr) !important;
+	}
+}
+
+/* Large Devices (1025px - 1440px) */
+@media (min-width: 1025px) and (max-width: 1440px) {
+	/* Grid */
+	.grid {
+		grid-template-columns: repeat(4, 1fr);
+		gap: 1.5rem;
+	}
+	
+	/* Container */
+	.container {
+		max-width: 1100px;
+	}
+}
+
+/* Hide hamburger on wider screens */
+@media (min-width: 769px) {
+	.hamburger { display: none !important; }
+	.main-nav { 
+		display: flex !important; 
+		position: static !important;
+		background: transparent !important;
+		backdrop-filter: none !important;
+		gap: 1rem;
+		width: auto;
+		padding: 0;
+	}
+
+	.main-nav a {
+		padding: 0.5rem;
+		display: inline;
+		border-bottom: none !important;
+	}
+
+	.user-profile {
+		display: flex !important;
+	}
+}
+
+/* Extra Large Devices (1441px+) */
+@media (min-width: 1441px) {
+	/* Grid */
+	.grid {
+		grid-template-columns: repeat(5, 1fr);
+		gap: 1.5rem;
+	}
+	
+	/* Container */
+	.container {
+		max-width: 1400px;
+	}
+}
+
+/* Tablet Landscape (1000px - 1366px) */
+@media (max-height: 500px) and (orientation: landscape) {
+	/* Reduce vertical spacing */
+	.hero-banner {
+		height: 80vh;
+	}
+	
+	.hero-content {
+		padding: 1rem;
+	}
+}
+
+/* Touch Device Optimizations */
+@media (hover: none) and (pointer: coarse) {
+	/* Increase tap targets */
+	.btn {
+		min-height: 44px;
+		padding: 0.65rem 1rem;
+	}
+	
+	.social-card {
+		min-height: 44px;
+		padding: 0.65rem;
+	}
+	
+	/* Remove hover effects on touch devices (they're not applicable) */
+	.card:hover {
+		transform: none;
+		box-shadow: 0 8px 16px rgba(2,6,23,0.3);
+	}
+	
+	/* Reduce animations for better performance */
+	.reveal {
+		transition: opacity 0.6s ease, transform 0.6s ease;
+	}
+}
+
+/* High Pixel Density Displays (Retina) */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+	/* Slightly thinner borders */
+	.card {
+		border: 0.5px solid rgba(255,255,255,0.05);
+	}
+	
+	.modal {
+		border: 0.5px solid rgba(255,255,255,0.06);
+	}
+}
+
+/* Print Styles */
+@media print {
+	.topbar, .footer, .modal-overlay, .btn {
+		display: none !important;
+	}
+	
+	body {
+		background: white;
+		color: black;
+	}
+	
+	.card {
+		page-break-inside: avoid;
+		border: 1px solid #ccc;
+	}
+}
