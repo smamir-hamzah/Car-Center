@@ -28,6 +28,7 @@ def home(request):
         "rentCars": rentCars,
         "saleCars": saleCars,
         "reviews": reviews,
+        "is_htmx": request.headers.get('HX-Request') == 'true',
     }
     return render(request, "home.html", context)
 
@@ -47,12 +48,12 @@ def api_car(request, id):
 
 def car_detail(request, car_id):
     car = get_object_or_404(Car, id=car_id)
-    return render(request, 'car-details.html', {'car': car})
+    return render(request, 'car-details.html', {'car': car, 'is_htmx': request.headers.get('HX-Request') == 'true'})
 
 
 def usercar_detail(request, car_id):
     car = get_object_or_404(Car, id=car_id)
-    return render(request, 'usercar_detail.html', {'car': car})
+    return render(request, 'usercar_detail.html', {'car': car, 'is_htmx': request.headers.get('HX-Request') == 'true'})
 
 
 
@@ -128,6 +129,7 @@ def userhtml(request):
         "reviews": reviews,
         "focus_car_id": focus_car_id,
         "my_bookings": my_bookings,
+        "is_htmx": request.headers.get('HX-Request') == 'true',
     }
     return render(request, 'user.html', context)
 

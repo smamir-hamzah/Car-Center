@@ -1,181 +1,383 @@
 {% load static %}
 <!doctype html>
 <html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Assistant Dashboard — AutoWave</title>
-<link rel="stylesheet" href="{% static 'css/home.css' %}">
-<link rel="stylesheet" href="{% static 'css/responsive.css' %}">
-<script src="https://unpkg.com/htmx.org@1.10.0"></script>
-</head>
-<body hx-get="." hx-trigger="every 12s" hx-swap="outerHTML">
-<header class="topbar">
-  <div class="container topbar-inner" style="display:flex;align-items:center;justify-content:space-between;">
-    <div class="logo" style="font-weight:700;color:#5ef0c6">AutoWave — Assistant</div>
-    <div style="display:flex;gap:1rem;align-items:center;">
-      <a href="{% url 'home' %}" class="btn ghost">Home</a>
-      <a href="{% url 'logout' %}" class="btn ghost">Logout</a>
-    </div>
-  </div>
-</header>
-<main class="container" style="padding:1rem;margin-top:1rem;">
 
-  <!-- Assistant Manager Profile Card -->
-  <div style="display:flex;align-items:center;justify-content:center;margin-bottom:2rem;">
-    <div class="profile-card">
-      <div style="display:flex;align-items:center;gap:1rem;">
-        {% if assistant_user.image %}
-          <img src="{{ assistant_user.image.url }}" alt="Profile" class="assistant-profile-photo-small">
-        {% else %}
-          <div class="assistant-profile-photo-small-placeholder">👤</div>
-        {% endif %}
-        <div>
-          <div style="font-size:1.2rem;font-weight:700;color:#fff;">{{ assistant_user.get_full_name|default:assistant_user.username }}</div>
-          <div style="font-size:0.9rem;color:#e6eef8;margin-top:0.2rem;">Assistant Manager</div>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Assistant Dashboard — AutoWave</title>
+  <link rel="stylesheet" href="{% static 'css/home.css' %}">
+  <link rel="stylesheet" href="{% static 'css/responsive.css' %}">
+  <script src="https://unpkg.com/htmx.org@1.10.0"></script>
+</head>
+
+<body hx-get="." hx-trigger="every 30s" hx-swap="outerHTML">
+  <header class="topbar">
+    <div class="container topbar-inner" style="display:flex;align-items:center;justify-content:space-between;">
+      <div class="logo" style="font-weight:700;color:#10b981">AutoWave — Assistant</div>
+      <div style="display:flex;gap:1rem;align-items:center;">
+        <a href="{% url 'home' %}" class="btn ghost">Home</a>
+        <a href="{% url 'logout' %}" class="btn ghost"
+          style="color:#ef4444;border-color:#fee2e2;background:#fef2f2;">Logout</a>
+      </div>
+    </div>
+  </header>
+  <main class="container" style="padding:1rem;margin-top:2rem;">
+
+    <!-- Modern Assistant Profile Header -->
+    <div class="reveal" style="margin-bottom:3rem;">
+      <div
+        style="background:linear-gradient(135deg, #10b981 0%, #3b82f6 100%);padding:2.5rem;border-radius:20px;box-shadow:0 10px 40px rgba(16, 185, 129, 0.2);">
+        <div style="display:flex;align-items:center;gap:2rem;flex-wrap:wrap;">
+          <div style="position:relative;">
+            {% if assistant_user.image %}
+            <img src="{{ assistant_user.image.url }}" alt="Profile"
+              style="width:100px;height:100px;border-radius:50%;border:4px solid white;box-shadow:0 4px 12px rgba(0,0,0,0.1);object-fit:cover;">
+            {% else %}
+            <div
+              style="width:100px;height:100px;border-radius:50%;background:white;border:4px solid white;display:flex;align-items:center;justify-content:center;font-size:2.5rem;box-shadow:0 4px 12px rgba(0,0,0,0.1);">
+              👤</div>
+            {% endif %}
+            <div
+              style="position:absolute;bottom:0;right:0;background:#22c55e;width:24px;height:24px;border-radius:50%;border:3px solid white;">
+            </div>
+          </div>
+          <div style="flex:1;min-width:200px;">
+            <div style="font-size:2rem;font-weight:800;color:white;margin-bottom:0.25rem;">{{
+              assistant_user.get_full_name|default:assistant_user.username }}</div>
+            <div style="font-size:1.1rem;color:rgba(255,255,255,0.9);font-weight:500;">✨ Assistant Manager</div>
+            <div style="font-size:0.9rem;color:rgba(255,255,255,0.7);margin-top:0.5rem;">{{ assistant_user.email }}
+            </div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- Styles moved to css/home.css -->
+    <!-- Statistics Cards -->
+    <div class="reveal"
+      style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.5rem;margin-bottom:3rem;">
+      <div
+        style="background:linear-gradient(135deg, #f59e0b 0%, #f97316 100%);padding:1.5rem;border-radius:16px;box-shadow:0 4px 12px rgba(245, 158, 11, 0.2);">
+        <div
+          style="font-size:0.85rem;color:rgba(255,255,255,0.9);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.5rem;">
+          Rent Requests</div>
+        <div style="font-size:2.5rem;font-weight:800;color:white;">{{ rent_requests|length }}</div>
+      </div>
+      <div
+        style="background:linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);padding:1.5rem;border-radius:16px;box-shadow:0 4px 12px rgba(59, 130, 246, 0.2);">
+        <div
+          style="font-size:0.85rem;color:rgba(255,255,255,0.9);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.5rem;">
+          Buy Requests</div>
+        <div style="font-size:2.5rem;font-weight:800;color:white;">{{ buy_requests|length }}</div>
+      </div>
+      <div
+        style="background:linear-gradient(135deg, #ef4444 0%, #dc2626 100%);padding:1.5rem;border-radius:16px;box-shadow:0 4px 12px rgba(239, 68, 68, 0.2);">
+        <div
+          style="font-size:0.85rem;color:rgba(255,255,255,0.9);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.5rem;">
+          Cancel Requests</div>
+        <div style="font-size:2.5rem;font-weight:800;color:white;">{{ cancel_requests|length }}</div>
+      </div>
+      <div
+        style="background:linear-gradient(135deg, #22c55e 0%, #16a34a 100%);padding:1.5rem;border-radius:16px;box-shadow:0 4px 12px rgba(34, 197, 94, 0.2);">
+        <div
+          style="font-size:0.85rem;color:rgba(255,255,255,0.9);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.5rem;">
+          Ready for Delivery</div>
+        <div style="font-size:2.5rem;font-weight:800;color:white;">{{ confirmed_bookings|length }}</div>
+      </div>
+    </div>
 
-  <h2 style="margin-bottom:1.2rem;">Booking Requests</h2>
-  <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:2rem;">
-    <a href="#rent" class="btn ghost">Rent Requests</a>
-    <a href="#buy" class="btn ghost">Buy Requests</a>
-    <a href="#cancel" class="btn ghost">Cancel Requests</a>
-  </div>
+    <!-- Quick Navigation -->
+    <div class="reveal" style="margin-bottom:2.5rem;display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;">
+      <a href="#rent" class="btn ghost" style="padding:0.75rem 1.5rem;font-weight:600;">📋 Rent Requests</a>
+      <a href="#buy" class="btn ghost" style="padding:0.75rem 1.5rem;font-weight:600;">🛒 Buy Requests</a>
+      <a href="#cancel" class="btn ghost" style="padding:0.75rem 1.5rem;font-weight:600;">❌ Cancel Requests</a>
+      <a href="#confirmed" class="btn ghost" style="padding:0.75rem 1.5rem;font-weight:600;">✅ Ready for Delivery</a>
+    </div>
 
-  <section id="rent" style="margin-top:1.5rem;">
-    <h3>Rent Requests</h3>
-    {% for b in rent_requests %}
-      <div class="card glass" style="padding:1.2rem 1.5rem;margin-top:1.1rem;border-left: 4px solid #f59e0b;box-shadow:0 2px 12px rgba(59,130,246,0.08);">
-        <div style="display:flex;flex-wrap:wrap;gap:1.5rem;align-items:center;">
-          <div style="flex:1;min-width:220px;">
-            <div style="display:flex;align-items:center;gap:0.5rem;">
+    <section id="rent" class="reveal" style="margin-top:2rem;">
+      <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;">
+        <div style="width:4px;height:32px;background:linear-gradient(180deg, #f59e0b, #f97316);border-radius:4px;">
+        </div>
+        <h3 style="color:#1e293b;font-size:1.5rem;font-weight:800;margin:0;">🚗 Rent Requests</h3>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(350px, 1fr));gap:1.5rem;">
+        {% for b in rent_requests %}
+        <div class="card glass"
+          style="padding:1.75rem;border-left: 4px solid #f59e0b;transition:all 0.3s ease;cursor:pointer;"
+          onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 12px 24px rgba(245, 158, 11, 0.15)'"
+          onmouseout="this.style.transform='translateY(0)';this.style.boxShadow=''">
+          <div style="display:flex;flex-direction:column;gap:1.25rem;">
+
+            <div style="display:flex;align-items:center;gap:1rem;">
               {% if b.client_photo %}
-                <img src="{{ b.client_photo.url }}" alt="Client Photo" class="booking-client-photo" style="width:24px !important;height:24px !important;border-radius:3px !important;object-fit:cover;">
+              <img src="{{ b.client_photo.url }}" alt="Client Photo"
+                style="width:56px;height:56px;border-radius:50%;object-fit:cover;border:3px solid #f8fafc;box-shadow:0 2px 8px rgba(0,0,0,0.1);">
               {% else %}
-                <div style="width:24px;height:24px;border-radius:3px;background:#eee;display:flex;align-items:center;justify-content:center;font-size:0.8rem;color:#3b82f6;">👤</div>
+              <div
+                style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg, #f59e0b, #f97316);display:flex;align-items:center;justify-content:center;font-size:1.5rem;border:3px solid #f8fafc;box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+                👤</div>
               {% endif %}
-              <div>
-                <strong style="font-size:1.1rem;color:#22c55e;">#{{ b.id }}</strong> — <span style="font-weight:600;">{{ b.full_name }}</span>
-                <div style="font-size:0.95rem;color:#3b82f6;">Mobile: {{ b.mobile }}</div>
+              <div style="flex:1;">
+                <div style="font-size:1.15rem;font-weight:700;color:#1e293b;">{{ b.full_name }}</div>
+                <div style="font-size:0.85rem;color:#64748b;margin-top:0.15rem;">ID: #{{ b.id }} • 📞 {{ b.mobile }}
+                </div>
               </div>
             </div>
-            <div style="margin-top:0.5rem;font-size:0.95rem;color:#555;">
-              <span>Car: <b>{{ b.car }}</b></span> | <span>Type: <b>{{ b.get_request_type_display }}</b></span> | <span>Status: <b style="color:#f59e0b;">{{ b.get_status_display }}</b></span>
+
+            <div
+              style="background:linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);padding:1.25rem;border-radius:12px;border:1px solid #fbbf24;font-size:0.9rem;color:#78350f;">
+              <div style="margin-bottom:0.5rem;font-weight:600;">🚗 <b>{{ b.car }}</b></div>
+              <div style="margin-bottom:0.5rem;">📍 {{ b.location }}</div>
+              <div style="margin-bottom:0.5rem;">🆔 {{ b.id_number }}</div>
+              <div style="margin-bottom:0.5rem;">📅 {{ b.created_at|date:"M d, Y H:i" }}</div>
+              <div>
+                🪪 License: <b>{{ b.driving_license_number }}</b>
+                {% if b.driving_license_photo %}
+                <a href="{{ b.driving_license_photo.url }}" target="_blank"
+                  style="color:#3b82f6;text-decoration:underline;margin-left:0.5rem;font-weight:600;">View Photo</a>
+                {% endif %}
+              </div>
             </div>
-            <div style="margin-top:0.5rem;font-size:0.95rem;color:#555;">
-              <span>Location: <b>{{ b.location }}</b></span> | <span>ID: <b>{{ b.id_number }}</b></span>
+
+            <!-- Photos Section -->
+            {% if b.driving_license_photo or b.client_photo %}
+            <div style="background:#ffffff;padding:1rem;border-radius:12px;border:1px solid #e2e8f0;">
+              <div
+                style="font-size:0.85rem;font-weight:700;color:#64748b;margin-bottom:0.75rem;text-transform:uppercase;letter-spacing:0.05em;">
+                📸 Uploaded Photos</div>
+              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:0.75rem;">
+                {% if b.driving_license_photo %}
+                <div style="text-align:center;">
+                  <a href="{{ b.driving_license_photo.url }}" target="_blank">
+                    <img src="{{ b.driving_license_photo.url }}" alt="License"
+                      style="width:100%;height:100px;object-fit:cover;border-radius:8px;border:2px solid #e2e8f0;transition:all 0.2s;"
+                      onmouseover="this.style.borderColor='#10b981';this.style.transform='scale(1.05)'"
+                      onmouseout="this.style.borderColor='#e2e8f0';this.style.transform='scale(1)'">
+                  </a>
+                  <div style="font-size:0.75rem;color:#64748b;margin-top:0.25rem;font-weight:600;">🪪 License</div>
+                </div>
+                {% endif %}
+                {% if b.client_photo %}
+                <div style="text-align:center;">
+                  <a href="{{ b.client_photo.url }}" target="_blank">
+                    <img src="{{ b.client_photo.url }}" alt="Client"
+                      style="width:100%;height:100px;object-fit:cover;border-radius:8px;border:2px solid #e2e8f0;transition:all 0.2s;"
+                      onmouseover="this.style.borderColor='#10b981';this.style.transform='scale(1.05)'"
+                      onmouseout="this.style.borderColor='#e2e8f0';this.style.transform='scale(1)'">
+                  </a>
+                  <div style="font-size:0.75rem;color:#64748b;margin-top:0.25rem;font-weight:600;">👤 Client</div>
+                </div>
+                {% endif %}
+              </div>
             </div>
-            <div style="margin-top:0.5rem;font-size:0.95rem;color:#555;">
-              <span>License: <b>{{ b.driving_license_number }}</b></span>
-              {% if b.driving_license_photo %}
-                | <a href="{{ b.driving_license_photo.url }}" target="_blank" style="color:#3b82f6;text-decoration:underline;">View License Photo</a>
+            {% endif %}
+
+            <div style="display:flex;gap:0.75rem;margin-top:auto;">
+              <form method="post" action="{% url 'assistant_process_booking' b.id %}" style="flex:1;">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="confirm">
+                <button class="btn primary" type="submit"
+                  style="width:100%;padding:0.875rem;font-weight:700;box-shadow:0 4px 12px rgba(16, 185, 129, 0.2);"
+                  onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 16px rgba(16, 185, 129, 0.3)'"
+                  onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 4px 12px rgba(16, 185, 129, 0.2)'">✓
+                  Confirm</button>
+              </form>
+              <form method="post" action="{% url 'assistant_process_booking' b.id %}" style="flex:1;">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="reject">
+                <button class="btn ghost" type="submit"
+                  style="width:100%;color:#ef4444;border-color:#fee2e2;padding:0.875rem;font-weight:700;"
+                  onmouseover="this.style.background='#fef2f2'" onmouseout="this.style.background=''">✗ Reject</button>
+              </form>
+            </div>
+          </div>
+        </div>
+        {% empty %}
+        <div
+          style="grid-column:1/-1;text-align:center;padding:3rem;background:#f8fafc;border-radius:16px;border:2px dashed #e2e8f0;">
+          <div style="font-size:3rem;margin-bottom:1rem;">📭</div>
+          <p style="color:#64748b;font-size:1.1rem;margin:0;">No rent requests pending</p>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section id="buy" class="reveal" style="margin-top:4rem;">
+      <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;">
+        <div style="width:4px;height:32px;background:linear-gradient(180deg, #3b82f6, #2563eb);border-radius:4px;">
+        </div>
+        <h3 style="color:#1e293b;font-size:1.5rem;font-weight:800;margin:0;">🛒 Buy Requests</h3>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(350px, 1fr));gap:1.5rem;">
+        {% for b in buy_requests %}
+        <div class="card glass"
+          style="padding:1.75rem;border-left: 4px solid #3b82f6;transition:all 0.3s ease;cursor:pointer;"
+          onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 12px 24px rgba(59, 130, 246, 0.15)'"
+          onmouseout="this.style.transform='translateY(0)';this.style.boxShadow=''">
+          <div style="display:flex;flex-direction:column;gap:1.25rem;">
+
+            <div style="display:flex;align-items:center;gap:1rem;">
+              {% if b.client_photo %}
+              <img src="{{ b.client_photo.url }}" alt="Client Photo"
+                style="width:56px;height:56px;border-radius:50%;object-fit:cover;border:3px solid #f8fafc;box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+              {% else %}
+              <div
+                style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg, #3b82f6, #2563eb);display:flex;align-items:center;justify-content:center;font-size:1.5rem;border:3px solid #f8fafc;box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+                👤</div>
               {% endif %}
+              <div style="flex:1;">
+                <div style="font-size:1.15rem;font-weight:700;color:#1e293b;">{{ b.full_name }}</div>
+                <div style="font-size:0.85rem;color:#64748b;margin-top:0.15rem;">ID: #{{ b.id }} • 📞 {{ b.mobile }}
+                </div>
+              </div>
             </div>
-            <div style="margin-top:0.5rem;font-size:0.95rem;color:#555;">
-              <span>Created: <b>{{ b.created_at|date:"M d, Y H:i" }}</b></span>
+
+            <div
+              style="background:linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);padding:1.25rem;border-radius:12px;border:1px solid #3b82f6;font-size:0.9rem;color:#1e3a8a;">
+              <div style="margin-bottom:0.5rem;font-weight:600;">🚗 <b>{{ b.car }}</b></div>
+              <div style="margin-bottom:0.5rem;">📅 {{ b.created_at|date:"M d, Y H:i" }}</div>
+              <div
+                style="background:rgba(255,255,255,0.5);padding:0.5rem;border-radius:6px;margin-top:0.5rem;font-weight:600;">
+                💰 Purchase Request</div>
+            </div>
+
+            <div style="display:flex;gap:0.75rem;margin-top:auto;">
+              <form method="post" action="{% url 'assistant_process_booking' b.id %}" style="flex:1;">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="confirm">
+                <button class="btn primary" type="submit"
+                  style="width:100%;padding:0.875rem;font-weight:700;box-shadow:0 4px 12px rgba(16, 185, 129, 0.2);"
+                  onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 16px rgba(16, 185, 129, 0.3)'"
+                  onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 4px 12px rgba(16, 185, 129, 0.2)'">✓
+                  Confirm</button>
+              </form>
+              <form method="post" action="{% url 'assistant_process_booking' b.id %}" style="flex:1;">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="reject">
+                <button class="btn ghost" type="submit"
+                  style="width:100%;color:#ef4444;border-color:#fee2e2;padding:0.875rem;font-weight:700;"
+                  onmouseover="this.style.background='#fef2f2'" onmouseout="this.style.background=''">✗ Reject</button>
+              </form>
             </div>
           </div>
-          <div style="display:flex;flex-direction:column;gap:0.7rem;min-width:120px;align-items:flex-end;">
-            <form method="post" action="{% url 'assistant_process_booking' b.id %}">
-              {% csrf_token %}
-              <input type="hidden" name="action" value="confirm">
-              <button class="btn primary" type="submit">Confirm</button>
-            </form>
-            <form method="post" action="{% url 'assistant_process_booking' b.id %}">
-              {% csrf_token %}
-              <input type="hidden" name="action" value="reject">
-              <button class="btn ghost" type="submit">Reject</button>
-            </form>
+        </div>
+        {% empty %}
+        <div
+          style="grid-column:1/-1;text-align:center;padding:3rem;background:#f8fafc;border-radius:16px;border:2px dashed #e2e8f0;">
+          <div style="font-size:3rem;margin-bottom:1rem;">🛒</div>
+          <p style="color:#64748b;font-size:1.1rem;margin:0;">No buy requests pending</p>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section id="cancel" class="reveal" style="margin-top:4rem;">
+      <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;">
+        <div style="width:4px;height:32px;background:linear-gradient(180deg, #ef4444, #dc2626);border-radius:4px;">
+        </div>
+        <h3 style="color:#1e293b;font-size:1.5rem;font-weight:800;margin:0;">❌ Cancellation Requests</h3>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(350px, 1fr));gap:1.5rem;">
+        {% for b in cancel_requests %}
+        <div class="card glass"
+          style="padding:1.75rem;border-left: 4px solid #ef4444;transition:all 0.3s ease;cursor:pointer;"
+          onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 12px 24px rgba(239, 68, 68, 0.15)'"
+          onmouseout="this.style.transform='translateY(0)';this.style.boxShadow=''">
+          <div style="display:flex;flex-direction:column;gap:1.25rem;">
+
+            <div style="display:flex;align-items:center;gap:1rem;">
+              {% if b.client_photo %}
+              <img src="{{ b.client_photo.url }}" alt="Client Photo"
+                style="width:56px;height:56px;border-radius:50%;object-fit:cover;border:3px solid #f8fafc;box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+              {% else %}
+              <div
+                style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg, #ef4444, #dc2626);display:flex;align-items:center;justify-content:center;font-size:1.5rem;border:3px solid #f8fafc;box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+                👤</div>
+              {% endif %}
+              <div style="flex:1;">
+                <div style="font-size:1.15rem;font-weight:700;color:#1e293b;">{{ b.full_name }}</div>
+                <div style="font-size:0.85rem;color:#64748b;margin-top:0.15rem;">ID: #{{ b.id }} • 📞 {{ b.mobile }}
+                </div>
+              </div>
+            </div>
+
+            <div
+              style="background:linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);padding:1.25rem;border-radius:12px;border:1px solid #ef4444;font-size:0.9rem;color:#7f1d1d;">
+              <div style="margin-bottom:0.5rem;font-weight:600;">🚗 <b>{{ b.car }}</b></div>
+              <div style="margin-bottom:0.5rem;">📅 {{ b.created_at|date:"M d, Y H:i" }}</div>
+              <div
+                style="background:rgba(255,255,255,0.5);padding:0.5rem;border-radius:6px;margin-top:0.5rem;font-weight:600;">
+                ⚠️ User requested cancellation</div>
+            </div>
+
+            <div style="display:flex;gap:0.75rem;margin-top:auto;">
+              <form method="post" action="{% url 'cancel_booking_confirmed' b.id %}" style="flex:1;">
+                {% csrf_token %}
+                <button class="btn primary" type="submit"
+                  style="width:100%;background:#ef4444;padding:0.875rem;font-weight:700;box-shadow:0 4px 12px rgba(239, 68, 68, 0.2);"
+                  onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 16px rgba(239, 68, 68, 0.3)'"
+                  onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 4px 12px rgba(239, 68, 68, 0.2)'">✓
+                  Approve Cancel</button>
+              </form>
+              <form method="post" action="{% url 'deny_cancellation' b.id %}" style="flex:1;">
+                {% csrf_token %}
+                <button class="btn ghost" type="submit" style="width:100%;padding:0.875rem;font-weight:700;"
+                  onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background=''">✗ Deny</button>
+              </form>
+            </div>
           </div>
         </div>
+        {% empty %}
+        <div
+          style="grid-column:1/-1;text-align:center;padding:3rem;background:#f8fafc;border-radius:16px;border:2px dashed #e2e8f0;">
+          <div style="font-size:3rem;margin-bottom:1rem;">✅</div>
+          <p style="color:#64748b;font-size:1.1rem;margin:0;">No cancellation requests</p>
+        </div>
+        {% endfor %}
       </div>
-    {% empty %}
-      <p>No rent requests</p>
-    {% endfor %}
-  </section>
+    </section>
 
-  <section id="buy" style="margin-top:1.5rem;">
-    <h3>Buy Requests</h3>
-    {% for b in buy_requests %}
-      <div class="card" style="padding:0.8rem;margin-top:0.6rem;border-left: 4px solid #f59e0b;">
-        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.8rem;">
-          <div style="flex:1;min-width:200px;">
-            <strong>#{{ b.id }}</strong> — {{ b.full_name }} ({{ b.mobile }})
-            <div style="font-size:0.9rem;color:var(--muted);">Car: {{ b.car }} — Status: <span style="color:#f59e0b;font-weight:600;">{{ b.get_status_display }}</span></div>
-          </div>
-          <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
-            <form method="post" action="{% url 'assistant_process_booking' b.id %}">
-              {% csrf_token %}
-              <input type="hidden" name="action" value="confirm">
-              <button class="btn primary" type="submit">Confirm</button>
-            </form>
-            <form method="post" action="{% url 'assistant_process_booking' b.id %}">
-              {% csrf_token %}
-              <input type="hidden" name="action" value="reject">
-              <button class="btn ghost" type="submit">Reject</button>
-            </form>
+    <section id="confirmed" class="reveal" style="margin-top:4rem;padding-top:2rem;border-top:1px solid #e2e8f0;">
+      <h3 style="color:#166534;margin-bottom:0.5rem;">Confirmed Bookings (Ready for Delivery)</h3>
+      <p style="color:#64748b;font-size:0.9rem;margin-bottom:1.5rem;">Click "Mark Complete" when delivery is finished.
+      </p>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(350px, 1fr));gap:1.5rem;">
+        {% for b in confirmed_bookings %}
+        <div class="card glass" style="padding:1.5rem;border-left: 4px solid #22c55e;">
+          <div style="display:flex;flex-direction:column;gap:1rem;">
+            <div style="display:flex;justify-content:space-between;align-items:start;">
+              <div>
+                <div style="font-size:1.1rem;font-weight:700;color:#1e293b;">{{ b.full_name }}</div>
+                <div style="font-size:0.9rem;color:#64748b;">#{{ b.id }} • {{ b.mobile }}</div>
+              </div>
+              <span class="booking-status confirmed">Confirmed</span>
+            </div>
+
+            <div
+              style="background:#f0fdf4;padding:1rem;border-radius:8px;border:1px solid #dcfce7;font-size:0.9rem;color:#166534;">
+              <div>🚗 <b>{{ b.car }}</b></div>
+              <div style="margin-top:0.4rem;">Ready for pickup/delivery</div>
+            </div>
+
+            <div style="margin-top:auto;">
+              <form method="post" action="{% url 'mark_delivery_complete' b.id %}">
+                {% csrf_token %}
+                <button class="btn primary" type="submit" style="width:100%;background:#22c55e;">✓ Mark
+                  Complete</button>
+              </form>
+            </div>
           </div>
         </div>
+        {% empty %}
+        <p style="color:#94a3b8;font-style:italic;">No confirmed bookings awaiting delivery.</p>
+        {% endfor %}
       </div>
-    {% empty %}
-      <p>No buy requests</p>
-    {% endfor %}
-  </section>
+    </section>
 
-  <section id="cancel" style="margin-top:1.5rem;">
-    <h3>Cancellation Requests</h3>
-    {% for b in cancel_requests %}
-      <div class="card" style="padding:0.8rem;margin-top:0.6rem;border-left: 4px solid #ef4444;">
-        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.8rem;">
-          <div style="flex:1;min-width:200px;">
-            <strong>#{{ b.id }}</strong> — {{ b.full_name }} ({{ b.mobile }})
-            <div style="font-size:0.9rem;color:var(--muted);">Car: {{ b.car }} — Status: <span style="color:#ef4444;font-weight:600;">{{ b.get_status_display }}</span></div>
-          </div>
-          <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
-            <form method="post" action="{% url 'cancel_booking_confirmed' b.id %}" style="display:inline;">
-              {% csrf_token %}
-              <button class="btn primary" type="submit" style="background:#ef4444;">Approve Cancel</button>
-            </form>
-            <form method="post" action="{% url 'deny_cancellation' b.id %}" style="display:inline;">
-              {% csrf_token %}
-              <button class="btn ghost" type="submit">Deny Cancel</button>
-            </form>
-          </div>
-        </div>
-      </div>
-    {% empty %}
-      <p>No cancellation requests</p>
-    {% endfor %}
-  </section>
-
-  <section id="confirmed" style="margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,0.1);">
-    <h3 style="color:#22c55e;">Confirmed Bookings (Ready for Delivery)</h3>
-    <p style="color:rgba(230,238,248,0.6);font-size:0.9rem;">Click "Mark Complete" when delivery is finished.</p>
-    {% for b in confirmed_bookings %}
-      <div class="card" style="padding:0.8rem;margin-top:0.6rem;border-left: 4px solid #22c55e;">
-        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.8rem;">
-          <div style="flex:1;min-width:200px;">
-            <strong>#{{ b.id }}</strong> — {{ b.full_name }} ({{ b.mobile }})
-            <div style="font-size:0.9rem;color:var(--muted);">Car: {{ b.car }} — Status: <span style="color:#22c55e;font-weight:600;">{{ b.get_status_display }}</span></div>
-          </div>
-          <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
-            <form method="post" action="{% url 'mark_delivery_complete' b.id %}" style="display:inline;">
-              {% csrf_token %}
-              <button class="btn primary" type="submit" style="background:#22c55e;">✓ Mark Complete</button>
-            </form>
-          </div>
-        </div>
-      </div>
-    {% empty %}
-      <p style="color:rgba(230,238,248,0.4);">No confirmed bookings awaiting delivery.</p>
-    {% endfor %}
-  </section>
-
-</main>
+  </main>
+  <script src="{% static 'js/htmx-config.js' %}"></script>
+  <script src="{% static 'js/home.js' %}"></script>
 </body>
+
 </html>

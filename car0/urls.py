@@ -19,6 +19,6 @@ urlpatterns = [
     path('assistant/approve-cancel/<int:booking_id>/', cancel_booking_confirmed, name='cancel_booking_confirmed'),
     path('assistant/deny-cancel/<int:booking_id>/', deny_cancellation, name='deny_cancellation'),
     path('review/submit/', submit_review, name='submit_review'),
-    path('userhtml/', userhtml, name='userhtml'),
+    path('user/', userhtml, name='userhtml'),
 
     ]

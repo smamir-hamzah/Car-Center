@@ -47,6 +47,7 @@ class Car(models.Model):
     def __str__(self):
         return f"{self.model} ({self.get_car_type_display()})"
 
+    @property
     def price_display(self):
         """
         Return a display-friendly price string (template helper).
